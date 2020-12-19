@@ -19,11 +19,11 @@ class CreateBarangTable extends Migration
             $table->string('keterangan')->nullable();
             $table->unsignedBigInteger('jenis_id');
             $table->foreign('jenis_id')->references('id')->on('jenis_barang')->onDelete('cascade');
-            $table->integer('stok');
+            $table->float('stok',10,2);
             $table->string('satuan');
             $table->string('sku')->unique()->nullable();
             $table->float('harga',10,2);
-            $table->float('diskon',2,2)->default(0);
+            $table->float('diskon',5,2)->default(0);
             $table->timestamps();
         });
     }

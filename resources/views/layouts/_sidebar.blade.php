@@ -16,6 +16,16 @@
             <i class="fa fa-fw fa-tag"></i>
             <span>Inventory</span></a>
     </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('admin/paket') }}">
+                <i class="fa fa-fw fa-gift"></i>
+                <span>Paket Treatment</span></a>
+        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/pegawai') }}">
+             <i class="fa fa-fw fa-users"></i>
+        <span>Pegawai & Kasir</span></a>
+    </li>
 
     @endif
     <li class="nav-item">

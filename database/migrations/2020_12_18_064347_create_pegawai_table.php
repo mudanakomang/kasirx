@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePaketTable extends Migration
+class CreatePegawaiTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreatePaketTable extends Migration
      */
     public function up()
     {
-        Schema::create('paket', function (Blueprint $table) {
+        Schema::create('pegawai', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->string('nama');
-            $table->string('keterangan')->nullable();
-            $table->float('harga',10,2);
-            $table->float('diskon',5,2)->default(0);
+            $table->string('alamat');
+            $table->date('tgl_lahir');
+            $table->string('nomorhp')->nullable();
+            $table->string('email')->unique()->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreatePaketTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('paket');
+        Schema::dropIfExists('pegawai');
     }
 }

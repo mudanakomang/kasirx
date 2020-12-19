@@ -18,7 +18,7 @@ class CreateJasaTable extends Migration
             $table->string('nama');
             $table->string('keterangan')->nullable();
             $table->float('harga',10,2);
-            $table->float('diskon',2,2)->default(0);
+            $table->float('diskon',5,2)->default(0);
             $table->timestamps();
         });
     }

@@ -46,7 +46,9 @@
                                   <td>{{ $item->stok }}</td>
                                   <td>{{ $item->satuan }}</td>
                                   <td>{{ $item->jenisBarang->jenis }}</td>
-                                  <td></td>
+                                  <td><a href="javascript:void(0);" id="{{ $item->id }}" onclick="event.preventDefault();hapusBarang(this.id);"><i class="fa fa-trash"></i> Hapus</a> ||
+                                        <a href="{{ url('admin/barang/edit/').'/'.$item->id }}" ><i class="fa fa-edit"></i> Edit</a>
+                                  </td>
                               </tr>
                         @endforeach
                     </tbody>
@@ -59,3 +61,42 @@
 
     </div>
     @endsection
+@section('script')
+<script>
+    function hapusBarang(id) {
+        Swal.fire({
+            title: 'Apakah anda yakin?',
+            text: "Data barang akan dihapus!",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText:'Batal',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            $.ajax({
+                url:'{{ route('barang.hapus') }}',
+                type:'POST',
+                data:{
+                    _token:'{{ csrf_token() }}',
+                    id:id
+                },success:function (s) {
+                    if(s==='success'){
+                        Swal.fire(
+                            'Berhasil!',
+                            'Data barang telah dihapus',
+                            'success'
+                        )
+                        setTimeout(function(){
+                            window.location.reload()
+                        }, 3000);
+                    }
+                }
+            })
+
+        }
+    })
+    }
+</script>
+@endsection
