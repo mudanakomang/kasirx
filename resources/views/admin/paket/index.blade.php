@@ -32,6 +32,7 @@
                             <th>Harga</th>
                             <th>Diskon</th>
                             <th>Detail</th>
+                            <th>Status</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -44,6 +45,7 @@
                                 <td>{{ formatRp($item->harga)  }}</td>
                                 <td>{{ formatPersen($item->diskon) }}</td>
                                 <td><a href="{{ url('admin/paket/detail/').'/'.$item->id }}">Detail</a> </td>
+                                <td> <p><strong class="{{ statusPaket($item)==0 ? "text-danger":"text-success" }}">{{ statusPaket($item)==0 ? "Tidak Aktif, Mohon perhatikan stok":"Aktif" }}</strong></p></td>
                                 <td><a href="javascript:void(0);" id="{{ $item->id }}" onclick="event.preventDefault();hapusPaket(this.id);"><i class="fa fa-trash"></i> Hapus</a> ||
                                     <a href="{{ url('admin/paket/edit/').'/'.$item->id }}" ><i class="fa fa-edit"></i> Edit</a>
                                 </td>

@@ -15,6 +15,6 @@ class Barang extends Model
     }
 
     public function paket(){
-        return $this->belongsToMany(Paket::class,'paket_barang')->withPivot(['kebutuhan','satuan']);
+        return $this->belongsToMany(Paket::class,'paket_barang')->withPivot(['kebutuhan']);
     }
 }

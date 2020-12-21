@@ -26,7 +26,11 @@
              <i class="fa fa-fw fa-users"></i>
         <span>Pegawai & Kasir</span></a>
     </li>
-
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('transaksi') }}">
+                <i class="fa fa-fw fa-print"></i>
+                <span>Transaksi</span></a>
+        </li>
     @endif
     <li class="nav-item">
         <a class="nav-link" href="inventory-reports.html">

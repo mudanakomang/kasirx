@@ -25,25 +25,37 @@ class PaketController extends Controller
        return response('success');
     }
     public function tambahItem(Request $request){
+        $paket=Paket::find($request->paket);
+        if(!$paket->barang->contains($request->barang)){
+            $rules=[
+                'barang'=>'required',
+                'kebutuhan'=>'required',
 
-        $rules=[
-            'barang'=>'required',
-            'kebutuhan'=>'required',
-            'satuan'=>'required',
-        ];
-        $messages=[
-            'barang.required'=>"Barang harus dipilih!",
-            'kebutuhan.required'=>'Kebutuhan barang harus diisi!',
-            'satuan.required'=>'Satuan harus diisi!',
-        ];
-        $vld=Validator::make($request->all(),$rules,$messages);
-        if ($vld->fails()){
-            return response($vld->errors());
+            ];
+            $messages=[
+                'barang.required'=>"Barang harus dipilih!",
+                'kebutuhan.required'=>'Kebutuhan barang harus diisi!',
+
+            ];
+            $vld=Validator::make($request->all(),$rules,$messages);
+            if ($vld->fails()){
+                return response($vld->errors());
+            }else{
+                $paket=Paket::find($request->paket);
+                $paket->barang()->attach($request->barang,['kebutuhan'=>$request->kebutuhan]);
+                return response('success');
+            }
         }else{
-            $paket=Paket::find($request->paket);
-            $paket->barang()->attach($request->barang,['kebutuhan'=>$request->kebutuhan,'satuan'=>$request->satuan]);
-            return response('success');
+            return response('exists');
         }
 
+
+    }
+
+    public function updateItem(Request $request){
+
+        $paket=Paket::find($request->paketid);
+        $paket->barang()->updateExistingPivot($request->itemid,['kebutuhan'=>$request->kebutuhan]);
+        return response('success');
     }
 }

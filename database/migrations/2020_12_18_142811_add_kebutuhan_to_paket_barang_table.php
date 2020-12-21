@@ -16,7 +16,6 @@ class AddKebutuhanToPaketBarangTable extends Migration
         Schema::table('paket_barang', function (Blueprint $table) {
             //
             $table->float('kebutuhan',5,2)->after('barang_id')->default(0);
-            $table->string('satuan')->after('kebutuhan');
         });
     }
 

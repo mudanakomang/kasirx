@@ -369,6 +369,8 @@
 <script src="{{ asset('js/chart-area-demo.js') }}"></script>
 <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
 <script src="{{ asset('js/select2.min.js') }}"></script>
+<script src="{{ asset('js/jquery.mask.min.js') }}"></script>
+<script src="{{ asset('js/jquery.number.min.js') }}"></script>
 
 <script>
     $(document).ready(function () {

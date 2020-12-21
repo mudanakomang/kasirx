@@ -52,7 +52,18 @@ Route::group(['middleware'=>['auth','roles']],function(){
         Route::get('paket/detail/{id}','PaketController@detail');
         Route::post('paket/item/hapus','PaketController@hapusItem')->name('item.hapus');
         Route::post('paket/item/tambah','PaketController@tambahItem')->name('item.tambah');
+        Route::post('paket/item/update','PaketController@updateItem')->name('item.update');
     });
 
+    Route::get('transaksi','TransaksiController@index');
+    Route::get('transaksi/tambah','TransaksiController@tambahTransaksi');
+    Route::get('transaksi/detail/{id}','TransaksiController@detail');
+    Route::post('transaksi/cetak','PrintController@cetakTrx')->name('trx.cetak');
+    Route::post('transaksi/cek','TransaksiController@cekTrx')->name('trx.cek');
+    Route::post('transaksi/tambah','TransaksiController@saveTrx')->name('trx.tambah');
+    Route::post('transaksi/simpan','TransaksiController@simpanTrx')->name('trx.simpan');
+    Route::post('transaksi/item/tambah','TransaksiController@itemAddTrx')->name('trx.item.add');
+    Route::post('transaksi/item/update','TransaksiController@itemUpdateTrx')->name('trx.item.update');
+    Route::post('transaksi/item/delete','TransaksiController@itemDeleteTrx')->name('trx.item.delete');
     Route::get('dashboard','DashboardController@index');
 });
