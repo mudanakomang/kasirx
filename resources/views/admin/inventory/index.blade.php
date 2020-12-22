@@ -32,6 +32,7 @@
                         <th>Keterangan</th>
                         <th>Stok</th>
                         <th>Satuan</th>
+                        <th>Harga / Satuan</th>
                         <th>Jenis</th>
                         <th></th>
                     </tr>
@@ -45,11 +46,50 @@
                                   <td>{{ $item->keterangan }}</td>
                                   <td>{{ $item->stok }}</td>
                                   <td>{{ $item->satuan }}</td>
+                                  <td>{{ formatRp($item->harga) .' / '.$item->satuan}}</td>
                                   <td>{{ $item->jenisBarang->jenis }}</td>
                                   <td><a href="javascript:void(0);" id="{{ $item->id }}" onclick="event.preventDefault();hapusBarang(this.id);"><i class="fa fa-trash"></i> Hapus</a> ||
-                                        <a href="{{ url('admin/barang/edit/').'/'.$item->id }}" ><i class="fa fa-edit"></i> Edit</a>
+                                        <a href="{{ url('admin/barang/edit/').'/'.$item->id }}" ><i class="fa fa-edit"></i> Edit</a>||
+                                      <a href="" data-toggle="modal" data-target="#tambahStok{{ $item->id }}"> <i class="fa fa-plus"></i> Tambah Stok</a>
                                   </td>
                               </tr>
+
+                              <div class="modal fade" id="tambahStok{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog modal-lg" role="document">
+                                      <div class="modal-content">
+                                          <div class="modal-header bg-primary text-white">
+                                              <h5 class="modal-title" id="exampleModalLabel">
+                                                  <i class="fa fa-tag"></i>
+                                                 Update Stok
+                                              </h5>
+                                              <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">×</span>
+                                              </button>
+                                          </div>
+                                          <form class="" id="formItem">
+                                              <div class="modal-body">
+                                                  <div class="form-group">
+                                                      <label>Sisa stok Terakhir :{{ $item->stok }}</label>
+                                                  </div>
+                                                  <div class="form-group">
+                                                      <label>Jumlah Stok Masuk <small class="text-muted">(Dalam {{ $item->satuan }})</small></label>
+                                                      <input type="number" min="0" step="0.5" id="stok{{ $item->id }}" name="stok" value="{{ old('stok') }}" class="form-control">
+                                                      <div class="text-danger stok">
+
+                                                      </div>
+
+                                                  </div>
+
+
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                  <input type="submit" id="barang{{$item->id}}" class="btn btn-primary" onclick="event.preventDefault();updateStok(this.id)" value="Simpan">
+                                              </div>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -97,6 +137,23 @@
 
         }
     })
+    }
+
+    function updateStok(barangid) {
+        var id=barangid.replace("barang","")
+        $.ajax({
+            url:"{{ route('stok.update') }}",
+            type:"POST",
+            data:{
+                _token:"{{ csrf_token() }}",
+                id:id,
+                stok:$("#stok"+id).val()
+            },success:function (s) {
+                if(s==="ok"){
+                    window.location.reload()
+                }
+            }
+        })
     }
 </script>
 @endsection

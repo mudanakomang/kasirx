@@ -13,4 +13,12 @@ class Transaksi extends Model
     public function paket(){
         return $this->belongsToMany(Paket::class,'paket_transaksi')->withPivot(['qty']);
     }
+
+    public function pegawai(){
+        return $this->belongsTo(Pegawai::class);
+    }
+
+    public function transaksiBatal(){
+        return $this->hasOne(TransaksiBatal::class);
+    }
 }

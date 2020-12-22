@@ -127,13 +127,13 @@
 
                     <small class="text-muted"><strong> Harga : {{ formatRp($paket->harga) }}</strong></small>
                     <br>
-                    <small class="text-muted"><strong> Diskon : {{ formatPersen($paket->diskon)  }}</strong></small>
+                    <small class="text-muted"><strong> Diskon : {{ formatRp($paket->diskon)  }}</strong></small>
                     <br>
                     <small class="text-muted"><strong> Jumlah Item : {{ $paket->pivot->qty  }}</strong></small>
                     <br>
-                    <small class="text-muted"><strong> Subtotal : {{ formatRp($paket->pivot->qty*($paket->harga-($paket->harga*$paket->diskon/100)))  }}</strong></small>
+                    <small class="text-muted"><strong> Subtotal : {{ formatRp($paket->pivot->qty*($paket->harga-$paket->diskon))  }}</strong></small>
                         @php
-                        $total+=$paket->pivot->qty*($paket->harga-($paket->harga*$paket->diskon/100))
+                        $total+=$paket->pivot->qty*($paket->harga-$paket->diskon)
                         @endphp
                     <hr>
 
@@ -232,7 +232,7 @@
             if(getCookie('kode')===null){
                 var dt= new Date();
                 var kode=dt.getFullYear()+""+dt.getMonth()+""+dt.getDate()+""+dt.getHours()+""+dt.getMinutes()+""+dt.getSeconds()
-                setCookie('kode',kode,1)
+                setCookie('kode',kode,0.25)
 
             }
             console.log(kode)
@@ -265,7 +265,7 @@
                 val=parseInt(val.replace(/\,/g,'').replace(/\./g,''))
                 if(val>=total){
                     $("#cetak").removeAttr("disabled")
-                    $("#cetak").css("cursor","hand")
+                    $("#cetak").css("cursor","pointer")
                 }else{
                     $("#cetak").attr("disabled","disabled").css("cursor","not-allowed")
                 }
@@ -448,6 +448,11 @@
                         tipe_byr:tipe_byr,
                         jumlah_byr:jumlah_byr.replace(/\,/g,'').replace(/\./g,''),
                         catatan:catatan,
+                    },success:function(s){
+                        if(s==='ok'){
+                            eraseCookie('kode')
+                           window.location.href="{{ url('transaksi') }}"
+                        }
                     }
                 })
 

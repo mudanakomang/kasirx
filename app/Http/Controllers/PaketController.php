@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Validator;
 class PaketController extends Controller
 {
     //
+
+    public function tambahPaket(){
+        return view('admin.paket.tambah');
+    }
     public function index(){
         $paket=Paket::all();
         return view('admin.paket.index',['paket'=>$paket]);
@@ -57,5 +61,60 @@ class PaketController extends Controller
         $paket=Paket::find($request->paketid);
         $paket->barang()->updateExistingPivot($request->itemid,['kebutuhan'=>$request->kebutuhan]);
         return response('success');
+    }
+
+    public function simpanPaket(Request $request){
+        $rules=[
+            'nama'=>'required',
+            'harga'=>'required',
+        ];
+        $messages=[
+            'nama.required'=>'Nama paket harus diisi!',
+            'harga.required'=>'Harga paket harus diisi!'
+        ];
+        $val=Validator::make($request->all(),$rules,$messages);
+
+        if ($val->fails()){
+            return redirect()->back()->withErrors($val->errors())->withInput();
+        }else{
+            $paket=new Paket();
+            $paket->nama=$request->nama;
+            $paket->harga=str_replace(".","",$request->harga);
+            $paket->diskon=str_replace(".","",$request->diskon);
+            $paket->keterangan=$request->keterangan;
+            $paket->save();
+
+            return redirect('admin/paket/detail/'.$paket->id);
+        }
+    }
+    public function edit($id){
+        $paket=Paket::find($id);
+        return view('admin.paket.edit',['paket'=>$paket]);
+    }
+
+    public function update(Request $request)
+    {
+        $rules = [
+            'nama' => 'required',
+            'harga' => 'required',
+        ];
+        $messages = [
+            'nama.required' => 'Nama paket harus diisi!',
+            'harga.required' => 'Harga paket harus diisi!'
+        ];
+        $val = Validator::make($request->all(), $rules, $messages);
+
+        if ($val->fails()) {
+            return redirect()->back()->withErrors($val->errors())->withInput();
+        } else {
+            $paket = Paket::find($request->id);
+            $paket->nama = $request->nama;
+            $paket->harga = str_replace(".", "", $request->harga);
+            $paket->diskon = str_replace(".", "", $request->diskon);
+            $paket->keterangan = $request->keterangan;
+            $paket->update();
+
+            return redirect('admin/paket');
+        }
     }
 }

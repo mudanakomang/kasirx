@@ -39,7 +39,7 @@ function totalHarga($transaksi){
     foreach ($transaksi->paket as $paket){
         $qty=$paket->pivot->qty;
         $total+=$paket->harga*$qty;
-        $diskon+=$qty*($paket->harga*$paket->diskon/100);
+        $diskon+=$qty*$paket->diskon;
 
     }
     $totalbyr=$total-$diskon;
@@ -49,4 +49,25 @@ function totalHarga($transaksi){
     $harga['harga']=$totalbyr;
     return $harga;
 
+}
+
+function grosProfit(){
+    $profit=0;
+    $omzet=0;
+    $tr=\App\Transaksi::whereDate('created_at',today('Asia/Makassar'))->get();
+    foreach ($tr as $t){
+        foreach ($t->paket as $paket){
+          $qty=$paket->pivot->qty;
+          $omzet+=($qty*$paket->harga)-($qty*$paket->diskon);
+
+          $harga=($qty*$paket->harga)-($qty*$paket->diskon);
+          $hargatotal=0;
+            foreach ($paket->barang as $barang){
+               $hargatotal+=$barang->pivot->kebutuhan*$qty*$barang->harga;
+            }
+            $profit+=$harga-$hargatotal;
+        }
+
+    }
+    return ['omzet'=>formatRp($omzet),'profit'=>formatRp($profit)];
 }

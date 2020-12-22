@@ -34,4 +34,9 @@ class User extends Authenticatable
     public function hasRole($role){
         return $this->role()->where('name',$role)->count()==1;
     }
+
+    public function transaksiBatal(){
+        return $this->hasMany(TransaksiBatal::class);
+    }
 }
+

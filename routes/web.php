@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('dashboard');
 });
 
 Auth::routes();
@@ -23,6 +23,7 @@ Route::group(['middleware'=>['auth','roles']],function(){
     Route::group(['prefix'=>'admin','roles'=>['admin']],function(){
         Route::get('inventory','InventoryController@index');
         Route::get('tambahbarang','InventoryController@tambahBarang');
+        Route::post('updatestok','InventoryController@updateStok')->name('stok.update');
         Route::get('barang/edit/{id}','InventoryController@editBarang');
         Route::post('tambahbarang','InventoryController@simpanBarang')->name('barang.tambah');
         Route::post('hapusbarang','InventoryController@hapusBarang')->name('barang.hapus');
@@ -49,10 +50,17 @@ Route::group(['middleware'=>['auth','roles']],function(){
         Route::post('user/hapus','PegawaiController@hapusUser')->name('user.hapus');
 
         Route::get('paket','PaketController@index');
+        Route::get('paket/tambah','PaketController@tambahPaket');
+        Route::post('paket/tambah','PaketController@simpanPaket')->name('paket.tambah');
         Route::get('paket/detail/{id}','PaketController@detail');
+        Route::get('paket/edit/{id}','PaketController@edit');
+        Route::post('paket/update','PaketController@update')->name('paket.update');
         Route::post('paket/item/hapus','PaketController@hapusItem')->name('item.hapus');
         Route::post('paket/item/tambah','PaketController@tambahItem')->name('item.tambah');
         Route::post('paket/item/update','PaketController@updateItem')->name('item.update');
+
+        Route::get('konfig','KonfigurasiController@index');
+        Route::post('konfig/update','KonfigurasiController@update')->name('konfig.update');
     });
 
     Route::get('transaksi','TransaksiController@index');
@@ -65,5 +73,9 @@ Route::group(['middleware'=>['auth','roles']],function(){
     Route::post('transaksi/item/tambah','TransaksiController@itemAddTrx')->name('trx.item.add');
     Route::post('transaksi/item/update','TransaksiController@itemUpdateTrx')->name('trx.item.update');
     Route::post('transaksi/item/delete','TransaksiController@itemDeleteTrx')->name('trx.item.delete');
+    Route::post('transaksi/delete','TransaksiController@deleteTrx')->name('trx.hapus');
+    Route::post('transaksi/batal','TransaksiController@batalTrx')->name('trx.batal');
     Route::get('dashboard','DashboardController@index');
+    Route::get('profil','DashboardController@profil');
+    Route::post('profil/update','PegawaiController@profilUpdate')->name('profil.update');
 });

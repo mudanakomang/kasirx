@@ -174,5 +174,35 @@ class PegawaiController extends Controller
         return response('success');
     }
 
+    public function profilUpdate(Request $request){
+        $rules=[
+            'name'=>'required',
+            'username'=>'required|unique:users,id',
+        ];
+        $messages=[
+            'name.required'=>'Nama harus diisi',
+            'username.required'=>'Username harus diisi!',
+            'username.unique'=>'Username sudah digunakan!',
+        ];
+        $validator=Validator::make($request->all(),$rules,$messages);
+        if ($validator->fails()){
+            return redirect()->back()->withErrors($validator->errors())->withInput();
+        }else{
+            if (empty($request->password)){
+                User::where('id',$request->id)->update([
+                    'name'=>$request->name,
+                    'username'=>$request->username,
+                ]);
+                return redirect()->back();
+            }else{
+                User::where('id',$request->id)->update([
+                    'name'=>$request->name,
+                    'username'=>$request->username,
+                    'password'=>bcrypt($request->password),
+                ]);
+                return redirect()->back();
+            }
+        }
+    }
 
 }

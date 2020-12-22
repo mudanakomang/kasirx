@@ -61,7 +61,7 @@ class InventoryController extends Controller
         $rules=[
             'nama'=>'required|unique:barang,id',
             'jenis'=>'required',
-            'stok'=>'required|numeric',
+           // 'stok'=>'required|numeric',
             'satuan'=>'required',
             'harga'=>'required|numeric',
         ];
@@ -69,8 +69,8 @@ class InventoryController extends Controller
             'nama.required'=>'Nama barang harus diisi',
             'nama.unique'=>'Nama barang sudah ada, silahkan diupdate',
             'jenis.required'=>'Jenis barang harus diisi',
-            'stok.required'=>'Stok harus diisi (minimal 0)',
-            'stok.numeric'=>'Stok harus angka',
+            //'stok.required'=>'Stok harus diisi (minimal 0)',
+            //'stok.numeric'=>'Stok harus angka',
             'satuan.required'=>'Satuan harus diisi',
             'harga.required'=>'Harga harus diisi',
             'harga.numeric'=>'Harga harus berupa angka'
@@ -83,7 +83,7 @@ class InventoryController extends Controller
                 'nama'=>$request->nama,
                 'keterangan'=>$request->keterangan,
                 'jenis_id'=>$request->jenis,
-                'stok'=>$request->stok,
+               // 'stok'=>$request->stok,
                 'satuan'=>$request->satuan,
                 'sku'=>$request->sku,
                 'harga'=>$request->harga,
@@ -151,5 +151,14 @@ class InventoryController extends Controller
             $jenis->save();
             return redirect('admin/jenisbarang');
         }
+    }
+
+    public function updateStok(Request $request){
+        $barang=Barang::find($request->id);
+        $stok=$barang->stok;
+        $stok+=$request->stok;
+
+        $barang->update(['stok'=>$stok]);
+        return response('ok');
     }
 }

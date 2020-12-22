@@ -53,7 +53,7 @@
 
                         <div class="form-group">
                             <label for="stok">Jumlah</label>
-                            <input type="number" id="stok" min="0" step="1"  class="form-control{{ $errors->has('stok') ? ' is-invalid' : '' }}" name="stok" value="{{ $barang->stok }}" placeholder="Masukkan jumlah" >
+                            <input type="number" disabled id="stok" min="0" step="1"  class="form-control{{ $errors->has('stok') ? ' is-invalid' : '' }}" name="stok" value="{{ $barang->stok }}" placeholder="Masukkan jumlah" >
                             @if ($errors->has('stok'))
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('stok') }}</strong>
@@ -80,7 +80,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label for="harga">Harga <small class="text-muted"> (Rp.)</small></label>
+                            <label for="harga">Harga <small class="text-muted"> (Rp.) / {{$barang->satuan}}</small></label>
                             <input type="text" id="harga"  class="form-control{{ $errors->has('harga') ? ' is-invalid' : '' }}" name="harga" value="{{ $barang->harga }}" placeholder="Masukkan Harga" >
                             @if ($errors->has('harga'))
                                 <span class="invalid-feedback" role="alert">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Transaksi;
+use App\TransaksiBatal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,7 +48,7 @@ class TransaksiController extends Controller
     }
 
     public function saveTrx(Request $request){
-        Transaksi::updateOrCreate(['kode'=>$request->kode],['pegawai_id'=>$request->pegawai,'user_id'=>Auth::user()->id]);
+        Transaksi::updateOrCreate(['kode'=>$request->kode],['pegawai_id'=>$request->pegawai,'user_id'=>Auth::user()->id,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
         return response('ok');
     }
 
@@ -121,6 +122,19 @@ class TransaksiController extends Controller
         $trx=Transaksi::find($request->trxid);
         $trx->update(['tipe_byr'=>$request->tipe_byr,"totalbayar"=>$request->jumlah_byr,"catatan"=>$request->catatan]);
 
+        return response('ok');
+    }
+
+    public function deleteTrx(Request $request){
+        $trx=Transaksi::find($request->trx);
+
+        $trx->paket()->detach();
+        $trx->delete();
+        return response('ok');
+    }
+
+    public function batalTrx(Request $request){
+        TransaksiBatal::insert(['transaksi_id'=>$request->trx,'user_id'=>Auth::user()->id,'keterangan'=>$request->keterangan,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
         return response('ok');
     }
 }

@@ -100,7 +100,7 @@
                     <p>Diskon</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ $paket->diskon==0 ? "": formatPersen($paket->diskon) }}</strong></p>
+                    <p><strong>{{ $paket->diskon==0 ? "": formatRp($paket->diskon) }}</strong></p>
                 </div>
             </div>
             <div class="row">
@@ -108,7 +108,7 @@
                     <p>Total Harga</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ formatRp( $paket->harga-($paket->harga*$paket->diskon)/100) }}</strong></p>
+                    <p><strong>{{ formatRp( $paket->harga-$paket->diskon) }}</strong></p>
                 </div>
             </div>
             <div class="row">
@@ -131,8 +131,14 @@
             </div>
 
         </div>
-
+        @php
+            $biaya=0;
+        @endphp
         @foreach($paket->barang as $barang)
+            @php
+                $peritem=$barang->harga;
+                $biaya+=$barang->pivot->kebutuhan*$peritem
+            @endphp
             <div id="div{{$barang->id}}">
                 <div class="input-group" >
                    <span class="input-group-btn">
@@ -197,7 +203,14 @@
                 </div>
             </div>
         @endforeach
-
+        <div class="col-sm-12 col-md-8 col-lg-8  ">
+            <div class=>
+                <h3>Perkiraan Biaya Barang : {{ formatRp($biaya) }}</h3>
+            </div>
+            <div class=>
+                <h3 class="{{ $paket->harga-$paket->diskon-$biaya<=0 ? "text-danger":"text-primary" }}">Perkiraan Keuntungan : {{ formatRp($paket->harga-$paket->diskon-$biaya) }}</h3>
+            </div>
+        </div>
     </div>
 @endsection
 @section('script')

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Konfigurasi;
 use App\Transaksi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
@@ -39,15 +41,19 @@ class PrintController extends Controller
     }
 
     public function cetak($connector,$content){
+        $konfig=Konfigurasi::first();
         $conn=new WindowsPrintConnector($connector);
         $printer=new Printer($conn);
         $printer->setFont(Printer::FONT_C);
-//        $printer->setTextSize(1,1);
-        $printer->feed();
         $printer->setJustification(Printer::JUSTIFY_CENTER);
-        $printer -> text("Toko\n");
-        $printer -> text("Alamat\n");
-        $printer -> text("NoHP\n");
+//        $printer->setTextSize(1,1);
+        $img=EscposImage::load(public_path().'/images/logo1.png');
+        $printer->bitImage($img);
+        $printer->feed();
+
+        $printer -> text($konfig->nama.PHP_EOL);
+        $printer -> text($konfig->alamat.PHP_EOL);
+        $printer -> text($konfig->nohp.PHP_EOL);
         $printer->setJustification(Printer::JUSTIFY_LEFT);
         $printer->text($this->line('='));
         $printer -> text($this->rows("TrxID #".$content->kode,"",""));
@@ -56,16 +62,16 @@ class PrintController extends Controller
 //        $printer->text($this->line('='));
 
         foreach ($content->paket as $paket){
-            $printer->text($this->rows($paket->nama." X ".$paket->pivot->qty,"","",true));
+            $printer->text($this->rows($paket->nama." X ".$paket->pivot->qty." @".number_format($paket->harga,0,"","."),"","",true));
             $printer->text($this->rows("Subtotal: ". number_format($paket->harga*$paket->pivot->qty,0,"","."),"","",true));
             if ($paket->diskon>0){
-                $harga=number_format(($paket->harga*$paket->pivot->qty)-($paket->pivot->qty*($paket->harga-($paket->harga*$paket->diskon/100))),0,"",".");
-                $printer->text($this->rows('Disc ('.$paket->diskon.'%) '." -".$harga,"",""));
+                $printer->text($this->rows('Disc (-'.number_format($paket->diskon,0,"",".").') ',"",""));
             }
             $printer->text($this->line('-'));
         }
         $printer->feed();
 
+        $printer -> text($this->rows('',strtoupper($content->tipe_byr),''));
         $printer -> text($this->rows('','Total :', formatRP(totalHarga($content)['harga'])));
         $printer -> text($this->rows('','Dibayar :', formatRp($content->totalbayar)));
         //$printer -> setEmphasis(false);
@@ -74,10 +80,11 @@ class PrintController extends Controller
         //$printer -> setEmphasis(false);
 
         $printer->text($this->line('='));
-        $printer->feed();
-        $printer -> text("Terima kasih \n");
+
+        $printer -> text($konfig->footnote.PHP_EOL);
         $printer -> feed();
         $printer -> text(Carbon::now('Asia/Makassar')->format('d/m/Y H:i') . " by ".Auth::user()->name."\n");
+        $printer -> text('Terapis: '.$content->pegawai->nama);
         /* Cut the receipt and open the cash drawer */
         $printer->feed(2);
 
@@ -86,10 +93,21 @@ class PrintController extends Controller
     }
 
     public function cetakTrx(Request $request){
+        $konfig=Konfigurasi::first();
+        $printer=!empty($konfig->printer) ? $konfig->printer:'POS58';
         $trx=Transaksi::find($request->trxid);
-        $this->cetak('POS58',$trx);
-        usleep(5000);
-        $this->cetak('POS58',$trx);
+        $this->cetak($printer,$trx);
+        sleep(4);
+        $this->cetak($printer,$trx);
+
+        foreach ($trx->paket as $paket){
+            foreach ($paket->barang as $barang){
+                $stok=$barang->stok;
+                $kebutuhan=$barang->pivot->kebutuhan;
+                $sisa=$stok-$kebutuhan;
+                $barang->update(['stok'=>$sisa]);
+            }
+        }
         $trx->update(['print'=>"y"]);
 
 

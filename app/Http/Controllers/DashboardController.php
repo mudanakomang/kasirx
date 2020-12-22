@@ -10,6 +10,15 @@ class DashboardController extends Controller
     //
     public function index(){
         $role=Auth::user()->hasRole('admin') ? 'admin':'kasir';
-        return view($role.'.dashboard');
+        if ($role=='admin'){
+            return view('admin.dashboard');
+        }else{
+            return redirect('transaksi');
+        }
+    }
+
+    public function profil(){
+        $user=Auth::user();
+        return view('profil',['user'=>$user]);
     }
 }

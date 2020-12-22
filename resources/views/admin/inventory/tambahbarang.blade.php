@@ -80,7 +80,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label for="harga">Harga <small class="text-muted"> (Rp.)</small></label>
+                            <label for="harga">Harga <small class="text-muted"> (Rp.) / Satuan</small></label>
                             <input type="text" id="harga"  class="form-control{{ $errors->has('harga') ? ' is-invalid' : '' }}" name="harga" value="{{ old('harga') }}" placeholder="Masukkan Harga" >
                             @if ($errors->has('harga'))
                                 <span class="invalid-feedback" role="alert">
