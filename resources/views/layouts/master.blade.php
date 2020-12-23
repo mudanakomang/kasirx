@@ -27,7 +27,7 @@
     <meta name="theme-color" content="#ffffff">
 
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/font-awesome.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/fontawesome.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/dataTables.bootstrap4.css') }}" rel="stylesheet">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
@@ -112,6 +112,7 @@
 <script src="{{ asset('js/chart.min.js') }}"></script>
 <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
 <script src="{{ asset('js/dataTables.bootstrap4.js') }}"></script>
+<script src="{{ asset('js/fontawesome.min.js') }}"></script>
 <script src="{{ asset('js/rc-pos.min.js') }}"></script>
 <script src="{{ asset('js/datatables-demo.js') }}"></script>
 <script src="{{ asset('js/chart-area-demo.js') }}"></script>
