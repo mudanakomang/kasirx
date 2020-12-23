@@ -54,7 +54,7 @@ function totalHarga($transaksi){
 function grosProfit(){
     $profit=0;
     $omzet=0;
-    $tr=\App\Transaksi::whereDate('created_at',today('Asia/Makassar'))->get();
+    $tr=\App\Transaksi::whereDate('created_at',today('Asia/Makassar'))->where('print','y')->whereDoesntHave('transaksiBatal')->get();
     foreach ($tr as $t){
         foreach ($t->paket as $paket){
           $qty=$paket->pivot->qty;
