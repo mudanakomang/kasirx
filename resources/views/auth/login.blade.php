@@ -33,7 +33,7 @@
     <meta name="theme-color" content="#ffffff">
 
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/fonrtawesome.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/fontawesome.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 
 
