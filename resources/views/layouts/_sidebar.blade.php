@@ -37,11 +37,21 @@
                 <i class="fa fa-fw fa-cogs"></i>
                 <span>Konfigurasi</span></a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('customer') }}">
+                <i class="fa fa-fw fa-user-circle"></i>
+                <span>Customer</span></a>
+        </li>
     @else
         <li class="nav-item">
             <a class="nav-link" href="{{ url('transaksi') }}">
                 <i class="fa fa-fw fa-print"></i>
                 <span>Transaksi</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('customer') }}">
+                <i class="fa fa-fw fa-user-circle"></i>
+                <span>Customer</span></a>
         </li>
     @endif
 

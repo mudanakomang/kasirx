@@ -78,4 +78,10 @@ Route::group(['middleware'=>['auth','roles']],function(){
     Route::get('dashboard','DashboardController@index');
     Route::get('profil','DashboardController@profil');
     Route::post('profil/update','PegawaiController@profilUpdate')->name('profil.update');
+
+    Route::get('customer','CustomerController@index');
+    Route::get('customer/tambah','CustomerController@tambah');
+    Route::post('customer/tambah','CustomerController@simpan')->name('customer.tambah');
+    Route::post('customer/hapus','CustomerController@hapus')->name('customer.hapus');
+    Route::post('customer/update','CustomerController@update')->name('customer.update');
 });

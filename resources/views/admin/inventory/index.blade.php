@@ -13,7 +13,7 @@
     <div class="card mb-3">
         <div class="card-header bg-primary text-white">
             <i class="fa fa-table"></i>
-            Inventory Records
+            Data Barang
             <a href="{{ url('admin/tambahbarang') }}" class="text-white" >
                   <span class="float-right">
                     <i class="fa fa-plus"></i>
