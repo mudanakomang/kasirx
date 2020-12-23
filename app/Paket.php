@@ -8,7 +8,7 @@ class Paket extends Model
 {
     //
     protected $table='paket';
-    protected $fillable=['nama','keterangan','harga','diskon'];
+    protected $fillable=['nama','keterangan','harga','diskon','status'];
 
     public function barang(){
         return $this->belongsToMany(Barang::class,'paket_barang')->withPivot(['kebutuhan']);

@@ -17,10 +17,16 @@
             <span>Inventory</span></a>
     </li>
         <li class="nav-item">
+            <a class="nav-link" href="{{ url('admin/jasa') }}">
+                <i class="fa fa-fw fa-hashtag"></i>
+                <span>Jasa</span></a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="{{ url('admin/paket') }}">
                 <i class="fa fa-fw fa-gift"></i>
                 <span>Paket Treatment</span></a>
         </li>
+
 
         <li class="nav-item">
             <a class="nav-link" href="{{ url('transaksi') }}">

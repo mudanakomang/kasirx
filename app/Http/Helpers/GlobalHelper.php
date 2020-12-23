@@ -82,10 +82,14 @@ function grosProfit(){
 
           $harga=($qty*$paket->harga)-($qty*$paket->diskon);
           $hargatotal=0;
+          $hargajasa=0;
+            foreach ($paket->jasa as $jasa) {
+                $hargajasa+=$jasa->harga;
+          }
             foreach ($paket->barang as $barang){
                $hargatotal+=$barang->pivot->kebutuhan*$qty*$barang->harga;
             }
-            $profit+=$harga-$hargatotal;
+            $profit+=$harga-$hargatotal-$hargajasa;
         }
 
     }

@@ -52,6 +52,43 @@
                 </form>
             </div>
         </div>
+    </div><div class="modal fade" id="tambahJasaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <i class="fa fa-tag"></i>
+                        Tambah Jasa
+                    </h5>
+                    <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form class="" id="formItem">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Pilih Jasa</label>
+                            <select class="form-control" id="jasa" name="jasa">
+                                <option value="" ><sub>Pilih Jasa</sub></option>
+                                @foreach(\App\Jasa::all() as $item)
+                                    <option value="{{ $item->id }}">{{ $item->nama }} -- {{ formatRp($item->harga) }}</option>
+                                @endforeach
+                            </select>
+                            <div class="text-danger jasa">
+
+                            </div>
+
+                        </div>
+
+                        <small class="text-muted"><em>Periksa kembali sebelum menyimpan!</em></small>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <input type="submit" class="btn btn-primary" onclick="event.preventDefault();simpanJasa()" value="Simpan">
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
 
@@ -59,23 +96,10 @@
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{{ url('admin/pegawai') }}"> Paket Treatment</a>
+                <a href="{{ url('admin/paket') }}"> Paket Treatment</a>
             </li>
             <li class="breadcrumb-item active">Detail Paket</li>
         </ol>
-        <!-- Page Content -->
-        <!-- DataTables Example -->
-        {{--<div class="card mb-3">--}}
-            {{--<div class="card-header bg-primary text-white">--}}
-                {{--<i class="fa fa-table"></i>--}}
-                {{--Detail Paket {{ $paket->nama }}--}}
-
-            {{--</div>--}}
-            {{--<div class="card-body">--}}
-                {{--<h2>Detail</h2>--}}
-            {{--</div>--}}
-            {{--<div class="card-footer small text-muted"></div>--}}
-        {{--</div>--}}
         <h2>Detail Paket Treatment {{ $paket->nama }}</h2>
         <hr>
         <div class="col-sm-12 col-md-8 col-lg-8">
@@ -129,6 +153,9 @@
             <div>
                 <p class="float-right"><a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#tambahItemModal" ><i class="fa fa-plus"></i> Tambah Item</a> </p>
             </div>
+            <div>
+                <p class="float-right"><a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#tambahJasaModal" ><i class="fa fa-plus"></i> Tambah Jasa</a> </p>
+            </div>
 
         </div>
         @php
@@ -171,19 +198,6 @@
                         </div>
                         <form class="">
                             <div class="modal-body">
-                                {{--<div class="form-group">--}}
-                                    {{--<label>Pilih Barang</label>--}}
-                                    {{--<select class="form-control " id="barang{{ $barang->id }}" name="barang">--}}
-                                        {{--<option value="" ><sub>Pilih Barang</sub></option>--}}
-                                        {{--@foreach(\App\Barang::all() as $item)--}}
-                                            {{--<option {{ $barang->id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ $item->nama }}</option>--}}
-                                        {{--@endforeach--}}
-                                    {{--</select>--}}
-                                    {{--<div class="text-danger barang">--}}
-
-                                    {{--</div>--}}
-
-                                {{--</div>--}}
                                 <div class="form-group">
                                     <label for="kebutuhan">Kebutuhan   <small class="text-muted"><em>(Dalam {{ $barang->satuan }})</em></small></label>
                                     <input type="number" class="form-control" min="0" step="0.5" id="kebutuhan{{ $barang->id }}" name="kebutuhan" value="{{ $barang->pivot->kebutuhan }}" placeholder="Masukkan kebutuhan barang" >
@@ -202,6 +216,29 @@
                     </div>
                 </div>
             </div>
+        @endforeach
+
+        @foreach($paket->jasa as $jasa)
+            @php
+                $peritemjasa=$jasa->harga;
+                $biaya+=$peritemjasa;
+            @endphp
+            <div id="divjasa{{$jasa->id}}">
+                <div class="input-group" >
+                   <span class="input-group-btn">
+                        <button type="button" id="jasa{{ $jasa->id }}" onclick="event.preventDefault(); hapusJasa(this.id);" class="btn btn-danger btn-sm"><i class="fa fa-minus"></i></button>
+
+                    </span> &nbsp;
+                    <p><strong>{{  $jasa->nama }}</strong></p>
+
+                </div>
+                <small class="text-muted"><strong> Harga : {{ formatRp($jasa->harga) }}</strong></small>
+                <br>
+
+                <hr>
+            </div>
+
+
         @endforeach
         <div class="col-sm-12 col-md-8 col-lg-8  ">
             <div class=>
@@ -246,6 +283,36 @@
         }
 
 
+        function hapusJasa(jasaid) {
+            var id=jasaid.replace('jasa','')
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: "Data jasa akan dihapus dari paket!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText:'Batal',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                $.ajax({
+                    url:"{{ route('paket.jasa.hapus') }}",
+                    type:"POST",
+                    data:{
+                        _token:"{{ csrf_token() }}",
+                        jasa_id:id,
+                        paket_id:"{{ $paket->id }}"
+                    },success:function(s){
+                        if (s==='success'){
+                            $('#divjasa'+id).hide()
+                        }
+                    }
+                })
+            }
+        })
+        }
+
         function simpanItem() {
             $.ajax({
                 url:"{{ route('item.tambah') }}",
@@ -255,6 +322,35 @@
                     paket:"{{ $paket->id }}",
                     barang:$("#barang").val(),
                     kebutuhan:$("#kebutuhan").val(),
+                },success:function (s) {
+                    if(s==='success'){
+                        window.location.reload()
+                    }else if(s==='exists'){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Item sudah masuk dalam paket ini, silahkan update',
+                        })
+                    }else{
+                        $.each($('div.text-danger'),function (k,v) {
+                            $(this).text("")
+                        })
+                        $.each(s,function (k,v) {
+                            $('div.'+k).text("").text(v)
+                        })
+                    }
+                }
+            })
+        }
+
+        function simpanJasa() {
+            $.ajax({
+                url:"{{ route('paket.jasa.tambah') }}",
+                type:"POST",
+                data:{
+                    _token:"{{ csrf_token() }}",
+                    paket:"{{ $paket->id }}",
+                    jasa:$("#jasa").val(),
                 },success:function (s) {
                     if(s==='success'){
                         window.location.reload()

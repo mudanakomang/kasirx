@@ -61,40 +61,5 @@
 @endsection
 @section('script')
     <script>
-        function hapusPegawai(id) {
-            Swal.fire({
-                title: 'Apakah anda yakin?',
-                text: "Data pegawai akan dihapus!",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText:'Batal',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                $.ajax({
-                    url:'{{ route('pegawai.hapus') }}',
-                    type:'POST',
-                    data:{
-                        _token:'{{ csrf_token() }}',
-                        id:id
-                    },success:function (s) {
-                        if(s==='success'){
-                            Swal.fire(
-                                'Berhasil!',
-                                'Data pegawai telah dihapus',
-                                'success'
-                            )
-                            setTimeout(function(){
-                                window.location.reload()
-                            }, 3000);
-                        }
-                    }
-                })
-
-            }
-        })
-        }
     </script>
 @endsection

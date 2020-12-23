@@ -28,6 +28,13 @@ class PaketController extends Controller
        $paket->barang()->detach($request->barang_id);
        return response('success');
     }
+
+    public function jasaHapus(Request $request){
+        $paket=Paket::find($request->paket_id);
+        $paket->jasa()->detach($request->jasa_id);
+        return response('success');
+    }
+
     public function tambahItem(Request $request){
         $paket=Paket::find($request->paket);
         if(!$paket->barang->contains($request->barang)){
@@ -53,6 +60,30 @@ class PaketController extends Controller
             return response('exists');
         }
 
+
+    }
+
+    public function jasaTambah(Request $request){
+        $paket=Paket::find($request->paket);
+        if(!$paket->jasa->contains($request->jasa)){
+            $rules=[
+                'jasa'=>'required',
+
+            ];
+            $messages=[
+                'jasa.required'=>"Jasa harus dipilih!",
+            ];
+            $vld=Validator::make($request->all(),$rules,$messages);
+            if ($vld->fails()){
+                return response($vld->errors());
+            }else{
+                $paket=Paket::find($request->paket);
+                $paket->jasa()->attach($request->jasa);
+                return response('success');
+            }
+        }else{
+            return response('exists');
+        }
 
     }
 

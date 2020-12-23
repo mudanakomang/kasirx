@@ -29,6 +29,15 @@ Route::group(['middleware'=>['auth','roles']],function(){
         Route::post('hapusbarang','InventoryController@hapusBarang')->name('barang.hapus');
         Route::post('updatebarang','InventoryController@updateBarang')->name('barang.update');
 
+        Route::get('jasa','JasaController@index');
+        Route::post('jasa/hapus','JasaController@jasaHapus')->name('jasa.hapus');
+        Route::get('jasa/tambah','JasaController@tambah');
+        Route::get('jasa/edit/{id}','JasaController@edit');
+        Route::post('jasa/tambah','JasaController@simpan')->name('jasa.tambah');
+        Route::post('jasa/update','JasaController@update')->name('jasa.update');
+        Route::post('paket/jasa/tambah','PaketController@jasaTambah')->name('paket.jasa.tambah');
+        Route::post('paket/jasa/hapus','PaketController@jasaHapus')->name('paket.jasa.hapus');
+
         Route::get('jenisbarang','InventoryController@jenisBarang');
         Route::get('jenisbarang/tambah','InventoryController@tambahJenisBarang');
         Route::post('jenisbarang/tambah','InventoryController@simpanJenisBarang')->name('jenisbarang.tambah');
