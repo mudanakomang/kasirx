@@ -42,7 +42,7 @@
                                 <td>{{ $key+1 }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td>{{ $item->alamat }}</td>
-                                <td>{{ !empty($item->tgl_lahir) ? Carbon\Carbon::parse($$item->tgl_lahir)->format('d M Y'):"" }}</td>
+                                <td>{{ !empty($item->tgl_lahir) ? Carbon\Carbon::parse($item->tgl_lahir)->format('d M Y'):"" }}</td>
                                 <td>
                                     @if(!empty($item->nowa))
                                         @php
