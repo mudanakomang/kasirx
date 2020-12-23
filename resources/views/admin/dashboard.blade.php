@@ -49,13 +49,20 @@
                         </div>
                         <div class="card-text text-center">
                             <ul class="list-group">
-                            @foreach(\Illuminate\Support\Facades\DB::select(\Illuminate\Support\Facades\DB::raw('SELECT nama,COUNT(nama) as count  from `transaksi`
-                                        LEFT JOIN paket_transaksi ON transaksi.id=paket_transaksi.transaksi_id
+                                @php
+                                    $data=[];
+                                 @endphp
+                            @foreach(\Illuminate\Support\Facades\DB::select(\Illuminate\Support\Facades\DB::raw('SELECT nama, paket_transaksi.*  from `transaksi` LEFT JOIN paket_transaksi ON transaksi.id=paket_transaksi.transaksi_id
                                         LEFT JOIN paket ON paket.id=paket_transaksi.paket_id
-                                        where date(transaksi.created_at) = "'.today('Asia/Makassar').'" and not exists (select * from `transaksi_batal` where `transaksi`.`id` = `transaksi_batal`.`transaksi_id`) and `print` = "y" GROUP BY nama')) as $paket)
+                                        where date(transaksi.created_at) = DATE(NOW()) and not exists (select * from `transaksi_batal` where `transaksi`.`id` = `transaksi_batal`.`transaksi_id`) and `print` = "y"')) as $paket)
+                                    @php
+                                    array_push($data ,['nama'=>$paket->nama,'qty'=>$paket->qty]);
+                                    @endphp
 
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">{{ $paket->nama }} <span class="badge badge-warning badge-pill">{{ $paket->count }}</span> </li>
                             @endforeach
+                                @foreach(sumPaket($data) as $pkt)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">{{ $pkt['nama'] }} <span class="badge badge-warning badge-pill">{{ $pkt['qty'] }}</span> </li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>

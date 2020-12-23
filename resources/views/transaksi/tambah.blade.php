@@ -73,6 +73,21 @@
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
+                            <label for="customer">Customer</label>
+                            <select class="form-control{{ $errors->has('customer') ? ' is-invalid' : '' }}" id="customer" name="customer" >
+                                <option value="">Pilih Customer</option>
+                                @foreach(\App\Customer::all() as $item)
+                                    <option {{ isset($transaksi) && $transaksi->customer_id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('Pegawai'))
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('Pegawai') }}</strong>
+                                    </span>
+                            @endif
+
+                        </div>
+                        <div class="form-group">
                             <label for="pegawai">Pegawai</label>
                             <select class="form-control{{ $errors->has('pegawai') ? ' is-invalid' : '' }}" id="pegawai" name="pegawai" >
                                 <option value="">Pilih Pegawai</option>
@@ -88,12 +103,8 @@
 
                         </div>
 
-
                         <small class="text-muted"><em>Cek kembali sebelum menyimpan</em></small>
                     </div>
-                    {{--<div class="modal-footer">--}}
-                        {{--<input type="submit" class="btn btn-primary" value="Simpan Barang">--}}
-                    {{--</div>--}}
                 </form>
             </div>
 
@@ -228,6 +239,7 @@
             $("#jumlah_byr").mask("#.##0", {reverse: true}).val("");
             $('#divcatatan').hide()
             $('#pegawai').select2()
+            $('#customer').select2()
             $('#tipe_byr').select2()
             if(getCookie('kode')===null){
                 var dt= new Date();
@@ -252,6 +264,7 @@
             }
             var total="{{ isset($total) ? $total:"" }}"
             this.value==="cash" || this.value==="" ? $("#jumlah_byr").val(""):$("#jumlah_byr").val($.number(total,0,','))
+            this.value=="cash" ? $("#cetak").attr("disabled","disabled").css("cursor","not-allowed"):$("#cetak").removeAttr("disabled").css("cursor","pointer")
 
 
         })
@@ -288,21 +301,25 @@
                 },success:trueOrFalse
             })
         }
-        $('#pegawai').on('change',function () {
+        $('#pegawai ,#customer').on('change',function () {
             var kode=getCookie('kode')
             if (!cekTrs(kode)){
                 var pg=this.value
-                $.ajax({
-                    url:"{{ route('trx.tambah') }}",
-                    type:"POST",
-                    data:{
-                        _token:"{{ csrf_token() }}",
-                        pegawai:pg,
-                        kode:kode
-                    },success:function () {
+                var cus=$('#customer').val()
+                if(cus!=='' && pg!==''){
+                    $.ajax({
+                        url:"{{ route('trx.tambah') }}",
+                        type:"POST",
+                        data:{
+                            _token:"{{ csrf_token() }}",
+                            pegawai:pg,
+                            customer:cus,
+                            kode:kode
+                        },success:function () {
 
-                    }
-                })
+                        }
+                    })
+                }
             }
 
         })

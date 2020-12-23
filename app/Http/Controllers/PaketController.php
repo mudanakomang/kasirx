@@ -80,7 +80,12 @@ class PaketController extends Controller
             $paket=new Paket();
             $paket->nama=$request->nama;
             $paket->harga=str_replace(".","",$request->harga);
-            $paket->diskon=str_replace(".","",$request->diskon);
+            if ($request->diskon==0 || $request->diskon==""){
+                $paket->diskon=0;
+            }else{
+                $paket->diskon=str_replace(".","",$request->diskon);
+            }
+
             $paket->keterangan=$request->keterangan;
             $paket->save();
 
@@ -110,7 +115,12 @@ class PaketController extends Controller
             $paket = Paket::find($request->id);
             $paket->nama = $request->nama;
             $paket->harga = str_replace(".", "", $request->harga);
-            $paket->diskon = str_replace(".", "", $request->diskon);
+            if ($request->diskon==0 || $request->diskon==""){
+                $paket->diskon=0;
+            }else{
+                $paket->diskon = str_replace(".", "", $request->diskon);
+            }
+
             $paket->keterangan = $request->keterangan;
             $paket->update();
 

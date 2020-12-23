@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Barang;
 use App\Transaksi;
 use App\TransaksiBatal;
 use Carbon\Carbon;
@@ -48,7 +49,7 @@ class TransaksiController extends Controller
     }
 
     public function saveTrx(Request $request){
-        Transaksi::updateOrCreate(['kode'=>$request->kode],['pegawai_id'=>$request->pegawai,'user_id'=>Auth::user()->id,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
+        Transaksi::updateOrCreate(['kode'=>$request->kode],['pegawai_id'=>$request->pegawai,'customer_id'=>$request->customer,'user_id'=>Auth::user()->id,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
         return response('ok');
     }
 
@@ -134,7 +135,19 @@ class TransaksiController extends Controller
     }
 
     public function batalTrx(Request $request){
-        TransaksiBatal::insert(['transaksi_id'=>$request->trx,'user_id'=>Auth::user()->id,'keterangan'=>$request->keterangan,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
+       TransaksiBatal::insert(['transaksi_id'=>$request->trx,'user_id'=>Auth::user()->id,'keterangan'=>$request->keterangan,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
+        $transaksi=Transaksi::find($request->trx);
+        foreach ($transaksi->paket as $paket){
+            $qty=$paket->pivot->qty;
+            foreach ($paket->barang as $barang){
+                $kebutuhan=$barang->pivot->kebutuhan;
+                $totalbarang=$kebutuhan*$qty;
+                $stoklama=$barang->stok;
+                $stokbaru=$stoklama+$totalbarang;
+                $barang->update(['stok'=>$stokbaru]);
+            }
+
+        }
         return response('ok');
     }
 }

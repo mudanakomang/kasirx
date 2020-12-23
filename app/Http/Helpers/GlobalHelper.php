@@ -51,6 +51,26 @@ function totalHarga($transaksi){
 
 }
 
+function sumPaket($arry){
+    $sumArray = [];
+
+    foreach ($arry as $agentInfo) {
+
+        // create new item in result array if pair 'id'+'name' not exists
+        if (!isset($sumArray[$agentInfo['nama']])) {
+            $sumArray[$agentInfo['nama']] = $agentInfo;
+        } else {
+            // apply sum to existing element otherwise
+            $sumArray[$agentInfo['nama']]['qty'] += $agentInfo['qty'];
+        }
+    }
+
+// optional action to flush keys of array
+    $sumArray = array_values($sumArray);
+
+    return $sumArray;
+}
+
 function grosProfit(){
     $profit=0;
     $omzet=0;
