@@ -20,6 +20,7 @@ class CustomerController extends Controller
         $cust=new Customer();
         $cust->nama=$request->nama;
         $cust->alamat=$request->alamat;
+        $cust->tgl_lahir=$request->tgl_lahir;
         $cust->nowa=$request->nowa;
         $cust->email=$request->email;
         $cust->instagram=$request->instagram;
@@ -39,6 +40,7 @@ class CustomerController extends Controller
         $cust=Customer::find($request->id);
         $cust->nama=$request->nama;
         $cust->alamat=$request->alamat;
+        $cust->tgl_lahir=$request->tgl_lahir;
         $cust->nowa=$request->nowa;
         $cust->email=$request->email;
         $cust->instagram=$request->instagram;
