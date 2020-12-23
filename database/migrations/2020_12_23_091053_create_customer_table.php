@@ -17,6 +17,7 @@ class CreateCustomerTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->string('nama');
             $table->string('alamat');
+            $table->string('tgl_lahir');
             $table->string('nowa')->nullable();
             $table->string('email')->nullable();
             $table->string('instagram')->nullable();

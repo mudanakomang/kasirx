@@ -29,6 +29,7 @@
                             <th>#</th>
                             <th>Nama</th>
                             <th>Alamat</th>
+                            <th>Tanggal Lahir</th>
                             <th>Nomor WhatsApp / HP</th>
                             <th>Email</th>
                             <th>Instagram</th>
@@ -41,6 +42,7 @@
                                 <td>{{ $key+1 }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td>{{ $item->alamat }}</td>
+                                <td>{{ !empty($item->tgl_lahir) ? Carbon\Carbon::parse($$item->tgl_lahir)->format('d M Y'):"" }}</td>
                                 <td>
                                     @if(!empty($item->nowa))
                                         @php
@@ -105,6 +107,18 @@
                                                     @endif
 
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label for="tgl_lahir">Tanggal Lahir Customer</label>
+                                                    <input type="date" id="tgl_lahir{{$item->id}}"  class="form-control{{ $errors->has('tgl_lahir') ? ' is-invalid' : '' }}" name="tgl_lahir" value="{{ $item->tgl_lahir }}" placeholder="Masukkan tanggal lahir customer" >
+                                                    @if ($errors->has('tgl_lahir'))
+                                                        <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('tgl_lahir') }}</strong>
+                                                </span>
+                                                                @endif
+
+                                                </div>
+
                                                 <div class="form-group">
                                                     <label for="nowa">Nomor HP/WA Customer</label>
                                                     <input type="text" id="nowa{{$item->id}}" pattern="\d*"  class="form-control{{ $errors->has('nowa') ? ' is-invalid' : '' }}" name="nowa" value="{{ $item->nowa }}" placeholder="Masukkan nomor HP customer" >

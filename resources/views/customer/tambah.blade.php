@@ -41,6 +41,16 @@
 
                         </div>
                         <div class="form-group">
+                            <label for="tgl_lahir">Tanggal Lahir Customer</label>
+                            <input type="date" id="tgl_lahir"  class="form-control{{ $errors->has('tgl_lahir') ? ' is-invalid' : '' }}" name="tgl_lahir" value="{{ old('tgl_lahir') }}" placeholder="Masukkan tanggal lahir customer" >
+                            @if ($errors->has('tgl_lahir'))
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('tgl_lahir') }}</strong>
+                                    </span>
+                            @endif
+
+                        </div>
+                        <div class="form-group">
                             <label for="nowa">Nomor HP/WA Customer</label>
                             <input type="text" id="nowa" pattern="\d*"  class="form-control{{ $errors->has('nowa') ? ' is-invalid' : '' }}" name="nowa" value="{{ old('nowa') }}" placeholder="Masukkan nomor HP customer" >
                             @if ($errors->has('nowa'))
