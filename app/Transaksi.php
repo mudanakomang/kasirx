@@ -8,7 +8,7 @@ class Transaksi extends Model
 {
     //
     protected $table='transaksi';
-    protected $fillable=['kode','tipe_byr','catatan','pegawai_id','user_id','totalbayar','print','customer_id'];
+    protected $fillable=['kode','tipe_byr','catatan','pegawai_id','user_id','totalbayar','print','customer_id','diskon'];
 
     public function paket(){
         return $this->belongsToMany(Paket::class,'paket_transaksi')->withPivot(['qty']);
@@ -24,5 +24,11 @@ class Transaksi extends Model
 
     public function customer(){
         return $this->belongsTo(Customer::class);
+    }
+    public function kasir(){
+        return $this->belongsTo(User::class,'user_id');
+    }
+    public function detail(){
+        return $this->hasMany(DetailTransaksi::class,'transaksi_id');
     }
 }

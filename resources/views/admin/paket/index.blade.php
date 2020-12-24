@@ -30,7 +30,6 @@
                             <th>Nama</th>
                             <th>Keterangan</th>
                             <th>Harga</th>
-                            <th>Diskon</th>
                             <th>Detail</th>
                             <th>Status</th>
                             <th></th>
@@ -38,14 +37,13 @@
                         </thead>
                         <tbody>
                         @foreach($paket as $key=>$item)
-                            <tr>
+                            <tr class="{{ $item->status=="N" ? 'table-danger':'' }}">
                                 <td>{{ $key+1 }}</td>
                                 <td><a href="{{ url('admin/paket/detail/').'/'.$item->id }}">{{ $item->nama }}</a></td>
                                 <td>{{ $item->keterangan }}</td>
                                 <td>{{ formatRp($item->harga)  }}</td>
-                                <td>{{ formatRp($item->diskon) }}</td>
                                 <td><a href="{{ url('admin/paket/detail/').'/'.$item->id }}">Detail</a> </td>
-                                <td> <p><strong class="{{ statusPaket($item)==0 ? "text-danger":"text-success" }}">{{ statusPaket($item)==0 ? "Tidak Aktif, Mohon perhatikan stok":"Aktif" }}</strong></p></td>
+                                <td> <p><strong class="{{ statusPaket($item)==0 || $item->status=="N" ? "text-danger":"text-success" }}">{{ statusPaket($item)==0 ? "Tidak Aktif, Mohon perhatikan stok":($item->status=="N" ? "Tidak Aktif":"Aktif") }}</strong></p></td>
                                 <td><a href="javascript:void(0);" id="{{ $item->id }}" onclick="event.preventDefault();hapusPaket(this.id);"><i class="fa fa-trash"></i> Hapus</a> ||
                                     <a href="{{ url('admin/paket/edit/').'/'.$item->id }}" ><i class="fa fa-edit"></i> Edit</a>
                                 </td>

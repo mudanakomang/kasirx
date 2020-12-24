@@ -34,18 +34,16 @@ function statusPaket($paket){
 
 function totalHarga($transaksi){
     $total=0;
-    $diskon=0;
     $harga=[];
     foreach ($transaksi->paket as $paket){
         $qty=$paket->pivot->qty;
         $total+=$paket->harga*$qty;
-        $diskon+=$qty*$paket->diskon;
-
     }
-    $totalbyr=$total-$diskon;
+
+    $totalbyr=$total-$transaksi->diskon;
 
     $harga['total']=$total;
-    $harga['diskon']=$diskon;
+    $harga['diskon']=$transaksi->diskon;
     $harga['harga']=$totalbyr;
     return $harga;
 
@@ -78,18 +76,18 @@ function grosProfit(){
     foreach ($tr as $t){
         foreach ($t->paket as $paket){
           $qty=$paket->pivot->qty;
-          $omzet+=($qty*$paket->harga)-($qty*$paket->diskon);
+          $omzet+=$qty*$paket->harga;
 
-          $harga=($qty*$paket->harga)-($qty*$paket->diskon);
+          $harga=$qty*$paket->harga;
           $hargatotal=0;
           $hargajasa=0;
             foreach ($paket->jasa as $jasa) {
-                $hargajasa+=$jasa->harga;
+                $hargajasa+=$jasa->harga*$qty;
           }
             foreach ($paket->barang as $barang){
                $hargatotal+=$barang->pivot->kebutuhan*$qty*$barang->harga;
             }
-            $profit+=$harga-$hargatotal-$hargajasa;
+            $profit+=$harga-$hargatotal-$hargajasa-$t->diskon;
         }
 
     }

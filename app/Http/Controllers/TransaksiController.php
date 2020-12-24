@@ -121,7 +121,7 @@ class TransaksiController extends Controller
 
     public function simpanTrx(Request $request){
         $trx=Transaksi::find($request->trxid);
-        $trx->update(['tipe_byr'=>$request->tipe_byr,"totalbayar"=>$request->jumlah_byr,"catatan"=>$request->catatan]);
+        $trx->update(['tipe_byr'=>$request->tipe_byr,"totalbayar"=>$request->jumlah_byr,"catatan"=>$request->catatan,'diskon'=>$request->diskon]);
 
         return response('ok');
     }

@@ -119,14 +119,14 @@
                     <p><strong>{{ $paket->keterangan }}</strong></p>
                 </div>
             </div>
-            <div class="row">
-                <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p>Diskon</p>
-                </div>
-                <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ $paket->diskon==0 ? "": formatRp($paket->diskon) }}</strong></p>
-                </div>
-            </div>
+            {{--<div class="row">--}}
+                {{--<div class="  col-sm-6 col-md-4 col-lg-4">--}}
+                    {{--<p>Diskon</p>--}}
+                {{--</div>--}}
+                {{--<div class="  col-sm-6 col-md-4 col-lg-4">--}}
+                    {{--<p><strong>{{ $paket->diskon==0 ? "": formatRp($paket->diskon) }}</strong></p>--}}
+                {{--</div>--}}
+            {{--</div>--}}
             <div class="row">
                 <div class="  col-sm-6 col-md-4 col-lg-4">
                     <p>Total Harga</p>
@@ -140,7 +140,7 @@
                     <p>Status</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong class="{{ statusPaket($paket)==0 ? "text-danger":"text-success" }}">{{ statusPaket($paket)==0 ? "Tidak Aktif, Mohon perhatikan stok":"Aktif" }}</strong></p>
+                    <p><strong class="{{ statusPaket($paket)==0 || $paket->status=="N" ? "text-danger":"text-success" }}">{{ statusPaket($paket)==0 ? "Tidak Aktif, Mohon perhatikan stok":($paket->status=="N" ? "Tidak Aktif":"Aktif") }}</strong></p>
                 </div>
             </div>
         </div>

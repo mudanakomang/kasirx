@@ -93,6 +93,9 @@ class InventoryController extends Controller
     }
     public function hapusBarang(Request $request){
         $barang=Barang::find($request->id);
+        foreach ($barang->paket as $paket){
+            $paket->update(['status'=>'N']);
+        }
         $barang->delete();
         return response('success');
     }

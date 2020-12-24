@@ -32,6 +32,7 @@
                             <th>Kode Transaksi</th>
                             <th>Tipe Pembayaran</th>
                             <th>Total Harga</th>
+                            <th>Diskon</th>
                             <th>Total Pembayaran</th>
                             <th>Therapist</th>
                             <th>Status</th>
@@ -81,7 +82,8 @@
 
                                 <td><a href="{{ url('transaksi/detail/').'/'.$item->id }}"> {{ $item->kode }}</a></td>
                                 <td>{{ $item->tipe_byr }}</td>
-                                <td>{{ formatRp(totalHarga($item)['harga'])  }}</td>
+                                <td>{{ formatRp(totalHarga($item)['total'])  }}</td>
+                                <td>{{ formatRp($item->diskon)  }}</td>
                                 <td>{{ formatRp($item->totalbayar)  }}</td>
                                 <td>{{ $item->pegawai->nama  }}</td>
                                 <td>@if(!empty($item->transaksiBatal))

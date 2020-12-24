@@ -111,12 +111,6 @@ class PaketController extends Controller
             $paket=new Paket();
             $paket->nama=$request->nama;
             $paket->harga=str_replace(".","",$request->harga);
-            if ($request->diskon==0 || $request->diskon==""){
-                $paket->diskon=0;
-            }else{
-                $paket->diskon=str_replace(".","",$request->diskon);
-            }
-
             $paket->keterangan=$request->keterangan;
             $paket->save();
 
@@ -133,10 +127,12 @@ class PaketController extends Controller
         $rules = [
             'nama' => 'required',
             'harga' => 'required',
+            'status'=>'required'
         ];
         $messages = [
             'nama.required' => 'Nama paket harus diisi!',
-            'harga.required' => 'Harga paket harus diisi!'
+            'harga.required' => 'Harga paket harus diisi!',
+            'status.required' => 'Status paket harus diisi!'
         ];
         $val = Validator::make($request->all(), $rules, $messages);
 
@@ -145,13 +141,8 @@ class PaketController extends Controller
         } else {
             $paket = Paket::find($request->id);
             $paket->nama = $request->nama;
+            $paket->status=$request->status;
             $paket->harga = str_replace(".", "", $request->harga);
-            if ($request->diskon==0 || $request->diskon==""){
-                $paket->diskon=0;
-            }else{
-                $paket->diskon = str_replace(".", "", $request->diskon);
-            }
-
             $paket->keterangan = $request->keterangan;
             $paket->update();
 

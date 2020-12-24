@@ -40,16 +40,16 @@
                             @endif
 
                         </div>
-                        <div class="form-group">
-                            <label for="diskon">Diskon<small class="text-muted">(Rp)</small></label>
-                            <input type="text" id="diskon" class="form-control{{ $errors->has('diskon') ? ' is-invalid' : '' }}" name="diskon" value="0" min="0" placeholder="Masukkan diskon" >
-                            @if ($errors->has('diskon'))
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $errors->first('diskon') }}</strong>
-                                </span>
-                            @endif
+                        {{--<div class="form-group">--}}
+                            {{--<label for="diskon">Diskon<small class="text-muted">(Rp)</small></label>--}}
+                            {{--<input type="text" id="diskon" class="form-control{{ $errors->has('diskon') ? ' is-invalid' : '' }}" name="diskon" value="0" min="0" placeholder="Masukkan diskon" >--}}
+                            {{--@if ($errors->has('diskon'))--}}
+                                {{--<span class="invalid-feedback" role="alert">--}}
+                                    {{--<strong>{{ $errors->first('diskon') }}</strong>--}}
+                                {{--</span>--}}
+                            {{--@endif--}}
 
-                        </div>
+                        {{--</div>--}}
 
                         <div class="form-group">
                             <label for="keterangan">Keterangan<small class="text-muted">(Optional)</small> </label>
@@ -78,7 +78,7 @@
     <script>
         $(document).ready(function () {
             $("#harga").mask("#.##0", {reverse: true})
-            $("#diskon").mask("#.##0", {reverse: true})
+//            $("#diskon").mask("#.##0", {reverse: true})
         })
     </script>
 @endsection

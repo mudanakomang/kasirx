@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DetailTransaksi;
 use App\Konfigurasi;
 use App\Transaksi;
 use Carbon\Carbon;
@@ -64,13 +65,12 @@ class PrintController extends Controller
         foreach ($content->paket as $paket){
             $printer->text($this->rows($paket->nama." X ".$paket->pivot->qty." @".number_format($paket->harga,0,"","."),"","",true));
             $printer->text($this->rows("Subtotal: ". number_format($paket->harga*$paket->pivot->qty,0,"","."),"","",true));
-            if ($paket->diskon>0){
-                $printer->text($this->rows('Disc (-'.number_format($paket->diskon,0,"",".").') ',"",""));
+            if ($content->diskon>0){
+                $printer->text($this->rows('Disc (-'.number_format($content->diskon,0,"",".").') ',"",""));
             }
             $printer->text($this->line('-'));
         }
         $printer->feed();
-
         $printer -> text($this->rows('',strtoupper($content->tipe_byr),''));
         $printer -> text($this->rows('','Total :', formatRP(totalHarga($content)['harga'])));
         $printer -> text($this->rows('','Dibayar :', formatRp($content->totalbayar)));
@@ -93,11 +93,37 @@ class PrintController extends Controller
     }
 
     public function cetakTrx(Request $request){
+
+
         $konfig=Konfigurasi::first();
         $printer=!empty($konfig->printer) ? $konfig->printer:'POS58';
         $trx=Transaksi::find($request->trxid);
+
+
+        foreach ($trx->paket as $paket){
+            $detail=new DetailTransaksi();
+            $detail->transaksi_id=$trx->id;
+            $detail->kode_transaksi=$trx->kode;
+            $detail->customer=$trx->customer->nama;
+            $detail->paket=$paket->nama;
+            $detail->harga_paket=$paket->harga;
+            $detail->paket_qty=$paket->pivot->qty;
+            $detail->harga_pokok=totalHarga($trx)['total'];
+            $detail->diskon=$trx->diskon;
+            $detail->total_harga=totalHarga($trx)['total']-$trx->diskon;
+            $detail->kembali=($trx->totalbayar)-totalHarga($trx)['harga'];
+            $detail->jumlah_bayar=$trx->totalbayar;
+            $detail->kasir=$trx->kasir->name;
+            $detail->terapis=$trx->pegawai->nama;
+            $detail->tgl_transaksi=now('Asia/Makassar')->format('Y-m-d H:i:s');
+            $detail->save();
+
+        }
+
+
+
         $this->cetak($printer,$trx);
-        sleep(4);
+        sleep(5);
         $this->cetak($printer,$trx);
 
         foreach ($trx->paket as $paket){
@@ -109,7 +135,6 @@ class PrintController extends Controller
             }
         }
         $trx->update(['print'=>"y"]);
-
 
 
         return response('ok');

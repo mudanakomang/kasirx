@@ -38,5 +38,8 @@ class User extends Authenticatable
     public function transaksiBatal(){
         return $this->hasMany(TransaksiBatal::class);
     }
+    public function transaksi(){
+        return $this->belongsTo(User::class);
+    }
 }
 

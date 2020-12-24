@@ -20,7 +20,7 @@
                             <select class="form-control" id="paket" name="paket">
                                 <option value="" ><sub>Pilih Paket</sub></option>
                                 @foreach(\App\Paket::all() as $item)
-                                    <option  {{ statusPaket($item)==0 ? "disabled":"" }} value="{{ $item->id }}">{{ statusPaket($item)==0 ? $item->nama." -- (Tidak aktif, periksa stok)":$item->nama }}</option>
+                                    <option  {{ statusPaket($item)==0 || $item->status=="N" ? "disabled":"" }} value="{{ $item->id }}">{{ statusPaket($item)==0 ? $item->nama." -- (Tidak aktif, periksa stok)":($item->status=="N" ? $item->nama."  -- Paket tidak aktif":$item->nama) }}</option>
                                 @endforeach
                             </select>
                             <div class="text-danger paket">
@@ -138,8 +138,8 @@
 
                     <small class="text-muted"><strong> Harga : {{ formatRp($paket->harga) }}</strong></small>
                     <br>
-                    <small class="text-muted"><strong> Diskon : {{ formatRp($paket->diskon)  }}</strong></small>
-                    <br>
+                    {{--<small class="text-muted"><strong> Diskon : {{ formatRp($paket->diskon)  }}</strong></small>--}}
+                    {{--<br>--}}
                     <small class="text-muted"><strong> Jumlah Item : {{ $paket->pivot->qty  }}</strong></small>
                     <br>
                     <small class="text-muted"><strong> Subtotal : {{ formatRp($paket->pivot->qty*($paket->harga-$paket->diskon))  }}</strong></small>
@@ -167,7 +167,7 @@
                                             <select class="form-control" id="paket{{$paket->id}}" name="paket">
                                                 <option value="" ><sub>Pilih Paket</sub></option>
                                                 @foreach(\App\Paket::all() as $item)
-                                                    <option  {{ statusPaket($item)==0 ? "disabled":"" }} {{ $paket->id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ statusPaket($item)==0 ? $item->nama." -- (Tidak aktif, periksa stok)":$item->nama }}</option>
+                                                    <option  {{ statusPaket($item)==0 || $item->status=='N' ? "disabled":"" }} {{ $paket->id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ statusPaket($item)==0 ? $item->nama." -- (Tidak aktif, periksa stok)":($item->status=="N" ? $item->nama."  -- Paket tidak aktif":$item->nama) }}</option>
                                                 @endforeach
                                             </select>
                                             <div class="text-danger paket{{ $paket->id }}">
@@ -204,8 +204,9 @@
             @endif
         <div class="col-sm-12 col-md-8 col-lg-8">
             <div class="d-flex justify-content-between">
-                <div> <h3>Total {{ isset($total) ? formatRp($total):"" }}</h3></div>
-                <div><h3 id="kembali">Kembali </h3></div>
+                <div> <h3 id="total">Total Harga :  {{ isset($total) ? formatRp($total):"" }}</h3></div>
+                <div><h3 id="kembali">Kembali </h3>
+                </div>
             </div>
             <div class="form-group">
                 <label for="tipe_byr">Tipe Pembayaran</label>
@@ -218,6 +219,10 @@
             <div class="form-group" id="divcatatan">
                 <label for="catatan">Catatan</label>
                 <textarea class="form-control" id="catatan" name="catatan"  rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="diskon">Diskon</label>
+                <input type="text" pattern="\d*" class="form-control" id="diskon" value="{{ isset($transaksi) ? $transaksi->diskon:""}}" name="diskon" onchange="updateKembali()" onpaste="updateKembali()" onkeyup="updateKembali()">
             </div>
             <div class="form-group">
                 <label for="jumlah_byr">Jumlah Pembayaran</label>
@@ -237,6 +242,7 @@
 
         $(document).ready(function () {
             $("#jumlah_byr").mask("#.##0", {reverse: true}).val("");
+            $("#diskon").mask("#.##0", {reverse: true}).val("");
             $('#divcatatan').hide()
             $('#pegawai').select2()
             $('#customer').select2()
@@ -255,7 +261,18 @@
 
 
         })
-        
+
+        $('#diskon').on('change keyup keydown paste',function () {
+            var total=parseInt("{{ isset($total) ? $total:0 }}")
+            var val=this.value
+            val=parseInt(val.replace(/\,/g,'').replace(/\./g,''))
+            if(this.value==""){
+                val=0
+            }
+            $('#total').text('Total Harga: Rp.'+$.number(total-val,0,","))
+            updateKembali()
+        })
+
         $('#tipe_byr').on('change',function () {
             if(this.value==="cash" || this.value===""){
                 $("#divcatatan").hide()
@@ -274,9 +291,17 @@
         $("#jumlah_byr").on("change keyup keypress paste",function () {
             if(!this.value=="0" || !this.value==""){
                 var total=parseInt("{{ isset($total) ? $total:0 }}")
+                if($("#diskon").val()!==""){
+                    var diskon=parseInt($("#diskon").val().replace(/\,/g,'').replace(/\./g,''))
+
+                }else{
+                    diskon=0
+                }
+
+                console.log(diskon)
                 var val=this.value
                 val=parseInt(val.replace(/\,/g,'').replace(/\./g,''))
-                if(val>=total){
+                if(val>=total-diskon){
                     $("#cetak").removeAttr("disabled")
                     $("#cetak").css("cursor","pointer")
                 }else{
@@ -402,8 +427,10 @@
         function updateKembali() {
             var kembali;
            var jum=$("#jumlah_byr").val()
+            var diskon=$("#diskon").val()
+            diskon=parseInt(diskon.replace(/\,/g,'').replace(/\./g,''))
            jum=parseInt(jum.replace(/\,/g,'').replace(/\./g,''))
-           var total=parseInt({{ isset( $total) ?  $total:0  }})
+           var total=parseInt({{ isset( $total) ?  $total:0  }})-diskon
             if(jum>total){
                kembali=jum-total;
                $("#kembali").text("")
@@ -455,6 +482,12 @@
                 if(tipe_byr==="cash"){
                     catatan=""
                 }
+                if($("#diskon").val()!==""){
+                    var diskon=$("#diskon").val()
+                    diskon=diskon.replace(/\,/g,'').replace(/\./g,'')
+                }else{
+                    diskon=0
+                }
 
                 $.ajax({
                     url:"{{ route('trx.simpan') }}",
@@ -464,6 +497,7 @@
                         trxid:trxid,
                         tipe_byr:tipe_byr,
                         jumlah_byr:jumlah_byr.replace(/\,/g,'').replace(/\./g,''),
+                        diskon:diskon,
                         catatan:catatan,
                     },success:function(s){
                         if(s==='ok'){
@@ -483,6 +517,12 @@
                 var tipe_byr=$("#tipe_byr").val()
                 var jumlah_byr=$("#jumlah_byr").val()
                 var catatan=$("#catatan").val()
+                if($('#diskon').val()!==""){
+                    var diskon=$('#diskon').val()
+                    diskon=diskon.replace(/\,/g,'').replace(/\./g,'')
+                }else{
+                    diskon=0
+                }
                 if(tipe_byr==="cash"){
                     catatan=""
                 }
@@ -496,6 +536,7 @@
                         tipe_byr:tipe_byr,
                         jumlah_byr:jumlah_byr.replace(/\,/g,'').replace(/\./g,''),
                         catatan:catatan,
+                        diskon:diskon
                     },success:function (s) {
                         if(s==='ok'){
                             $.ajax({
