@@ -148,6 +148,9 @@ class TransaksiController extends Controller
             }
 
         }
+        foreach ($transaksi->detail as $detail){
+            $detail->update(['status'=>'batal']);
+        }
         return response('ok');
     }
 }
