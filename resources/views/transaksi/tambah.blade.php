@@ -428,7 +428,12 @@
             var kembali;
            var jum=$("#jumlah_byr").val()
             var diskon=$("#diskon").val()
-            diskon=parseInt(diskon.replace(/\,/g,'').replace(/\./g,''))
+            if(diskon==''){
+               diskon=0
+            }else{
+                diskon=parseInt(diskon.replace(/\,/g,'').replace(/\./g,''))
+            }
+
            jum=parseInt(jum.replace(/\,/g,'').replace(/\./g,''))
            var total=parseInt({{ isset( $total) ?  $total:0  }})-diskon
             if(jum>total){
