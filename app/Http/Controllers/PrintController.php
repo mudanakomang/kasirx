@@ -104,7 +104,7 @@ class PrintController extends Controller
             $detail=new DetailTransaksi();
             $detail->transaksi_id=$trx->id;
             $detail->kode_transaksi=$trx->kode;
-            $detail->customer=$trx->customer->nama;
+            $detail->customer=$trx->customer_id;
             $detail->paket=$paket->nama;
             $detail->harga_paket=$paket->harga;
             $detail->paket_qty=$paket->pivot->qty;

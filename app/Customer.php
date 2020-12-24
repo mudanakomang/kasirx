@@ -14,6 +14,7 @@ class Customer extends Model
         return $this->hasMany(Transaksi::class);
     }
     public function detail(){
-        return $this->hasManyThrough(DetailTransaksi::class,Transaksi::class,'customer_id','transaksi_id');
+        return $this->hasMany(DetailTransaksi::class,'customer');
     }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\DetailTransaksi;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -46,5 +47,15 @@ class CustomerController extends Controller
         $cust->instagram=$request->instagram;
         $cust->save();
         return redirect()->back();
+    }
+
+    public function transaksi($id){
+        $trx=Customer::find($id)->detail->groupBy('kode_transaksi');
+        return view('customer.transaksi',['transaksi'=>$trx]);
+    }
+
+    public function detail($kode){
+        $detail=DetailTransaksi::where('kode_transaksi',$kode)->get();
+        return view('customer.detail',['detail'=>$detail]);
     }
 }

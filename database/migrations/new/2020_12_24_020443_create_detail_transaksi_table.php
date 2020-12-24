@@ -17,7 +17,8 @@ class CreateDetailTransaksiTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->bigInteger('transaksi_id')->unsigned();
             $table->string('kode_transaksi');
-            $table->string('customer');
+            $table->bigInteger('customer')->unsigned();
+            $table->foreign('customer')->references('id')->on('customer')->onDelete('cascade');
             $table->string('paket');
             $table->float('harga_paket',12,2);
             $table->integer('paket_qty');

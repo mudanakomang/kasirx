@@ -47,7 +47,7 @@
                         <small class="text-muted"><em>Cek kembali sebelum menyimpan</em></small>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" class="btn btn-primary" value="Simpan Barang">
+                        <input type="submit" class="btn btn-primary" value="Simpan Jasa">
                     </div>
                 </form>
             </div>

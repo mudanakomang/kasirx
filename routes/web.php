@@ -93,4 +93,6 @@ Route::group(['middleware'=>['auth','roles']],function(){
     Route::post('customer/tambah','CustomerController@simpan')->name('customer.tambah');
     Route::post('customer/hapus','CustomerController@hapus')->name('customer.hapus');
     Route::post('customer/update','CustomerController@update')->name('customer.update');
+    Route::get('customer/transaksi/{id}','CustomerController@transaksi');
+    Route::get('customer/transaksi/detail/{kode}','CustomerController@detail');
 });

@@ -33,6 +33,7 @@
                             <th>Nomor WhatsApp / HP</th>
                             <th>Email</th>
                             <th>Instagram</th>
+                            <th>Transaksi</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -64,6 +65,11 @@
                                 <td>@if(!empty($item->instagram))
                                        <a href="{{ url('https://instagram.com').'/'.$item->instagram }}" target="_blank">{{$item->instagram}}</a>
                                     @endif
+                                </td>
+                                <td>
+                                    @if($item->transaksi->count()>0)
+                                        <a href="{{ url('customer/transaksi/').'/'.$item->id }}" >Lihat Trnasaksi</a>
+                                        @endif
                                 </td>
                                 <td>
                                     <a href="" data-toggle="modal" data-target="#customerModal{{$item->id}}" id="edit{{$item->id}}" ><i class="fa fa-edit"></i> Edit</a> ||
