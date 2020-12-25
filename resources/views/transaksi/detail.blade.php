@@ -102,6 +102,14 @@
             </div>
             <div class="row">
                 <div class="  col-sm-6 col-md-4 col-lg-4">
+                    <p>Customer</p>
+                </div>
+                <div class="  col-sm-6 col-md-4 col-lg-4">
+                    <p><strong>{{ $transaksi->customer->nama }}</strong></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="  col-sm-6 col-md-4 col-lg-4">
                     <p>Total Harga</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
@@ -130,6 +138,15 @@
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
                     <p><strong class="{{ !empty($transaksi->transaksiBatal) ? 'text-danger':'' }}">{{ $transaksi->print== 'n' ? "Belum dicetak":(!empty($transaksi->transaksiBatal) ? "Batal":"Sudah dicetak") }}</strong></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="  col-sm-6 col-md-4 col-lg-4">
+                    <p>Tanggal</p>
+                </div>
+                <div class="  col-sm-6 col-md-4 col-lg-4">
+                    <p><strong>{{ \Carbon\Carbon::parse($transaksi->created_at)->timezone('Asia/Makassar')->format('d/m/Y H:i') }}</strong></p>
                 </div>
             </div>
 

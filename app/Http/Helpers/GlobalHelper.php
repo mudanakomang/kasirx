@@ -73,23 +73,35 @@ function grosProfit(){
     $profit=0;
     $omzet=0;
     $tr=\App\Transaksi::whereDate('created_at',today('Asia/Makassar'))->where('print','y')->whereDoesntHave('transaksiBatal')->get();
+    $total_transaksi=0;
     foreach ($tr as $t){
+        $total_harga_paket=0;
+        $total_biaya_paket=0;
+        $total_keuntungan_paket=0;
         foreach ($t->paket as $paket){
-          $qty=$paket->pivot->qty;
-          $omzet+=$qty*$paket->harga;
-
-          $harga=$qty*$paket->harga;
-          $hargatotal=0;
-          $hargajasa=0;
-            foreach ($paket->jasa as $jasa) {
-                $hargajasa+=$jasa->harga*$qty;
-          }
+            $total_biaya_barang=0;
+            $total_biaya_jasa=0;
+            $qty=$paket->pivot->qty;
+            $total_harga_paket+=$paket->harga*$qty;
             foreach ($paket->barang as $barang){
-               $hargatotal+=$barang->pivot->kebutuhan*$qty*$barang->harga;
+                $total_biaya_barang+=$barang->pivot->kebutuhan*$barang->harga*$qty;
             }
-            $profit+=$harga-$hargatotal-$hargajasa-$t->diskon;
-        }
 
+            foreach ($paket->jasa as $jasa){
+                $total_biaya_jasa+=$jasa->harga*$qty;
+            }
+
+            $total_biaya_paket+=$total_biaya_barang+$total_biaya_jasa;
+
+        }
+        $total_keuntungan_paket+=$total_harga_paket-$total_biaya_paket;
+        $profit+=$total_keuntungan_paket-$t->diskon;
+//        dd($total_keuntungan_paket);
+//
+//        dd($total_biaya_paket);
+//        dd($total_harga_paket);
+        $omzet+=$total_harga_paket-$t->diskon;
     }
+
     return ['omzet'=>formatRp($omzet),'profit'=>formatRp($profit)];
 }
