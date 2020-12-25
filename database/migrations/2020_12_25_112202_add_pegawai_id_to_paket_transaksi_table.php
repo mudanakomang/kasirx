@@ -13,13 +13,14 @@ class AddPegawaiIdToPaketTransaksiTable extends Migration
      */
     public function up()
     {
-        Schema::table('paket_transaksi', function (Blueprint $table) {
-            //
-            $table->unsignedBigInteger('pegawai_id')->after('qty')->nullable();
-            $table->foreign('pegawai_id')->references('id')->on('pegawai')->onDelete('cascade');
-        });
+        if (!Schema::hasColumn('paket_transaksi', 'pegawai_id')) {
+            Schema::table('paket_transaksi', function (Blueprint $table) {
+                //
+                $table->unsignedBigInteger('pegawai_id')->after('qty')->nullable();
+                $table->foreign('pegawai_id')->references('id')->on('pegawai')->onDelete('cascade');
+            });
+        }
     }
-
     /**
      * Reverse the migrations.
      *
