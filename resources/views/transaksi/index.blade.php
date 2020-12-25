@@ -34,7 +34,7 @@
                             <th>Total Harga</th>
                             <th>Diskon</th>
                             <th>Total Pembayaran</th>
-                            <th>Therapist</th>
+                            {{--<th>Therapist</th>--}}
                             <th>Status</th>
                             <th>Tanggal</th>
                             <th></th>
@@ -85,7 +85,7 @@
                                 <td>{{ formatRp(totalHarga($item)['total'])  }}</td>
                                 <td>{{ formatRp($item->diskon)  }}</td>
                                 <td>{{ formatRp($item->totalbayar)  }}</td>
-                                <td>{{ $item->pegawai->nama  }}</td>
+                                {{--<td>{{ $item->pegawai->nama  }}</td>--}}
                                 <td>@if(!empty($item->transaksiBatal))
                                         <a href='#' data-toggle='modal' data-target='#batalModal{{$item->id}}' >Dibatalkan</a>
                                     @else
@@ -117,7 +117,7 @@
     <script>
         $(function () {
             $("#datatableTransaksi").dataTable({
-                "order":[[5,"desc"]]
+                "order":[[6,"desc"]]
             })
         })
 

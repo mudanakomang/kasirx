@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\DetailTransaksi;
 use App\Konfigurasi;
+use App\Pegawai;
 use App\Transaksi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mike42\Escpos\EscposImage;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
 
@@ -65,14 +65,17 @@ class PrintController extends Controller
         foreach ($content->paket as $paket){
             $printer->text($this->rows($paket->nama." X ".$paket->pivot->qty." @".number_format($paket->harga,0,"","."),"","",true));
             $printer->text($this->rows("Subtotal: ". number_format($paket->harga*$paket->pivot->qty,0,"","."),"","",true));
-            if ($content->diskon>0){
-                $printer->text($this->rows('Disc (-'.number_format($content->diskon,0,"",".").') ',"",""));
-            }
+            $printer->text($this->rows("Terapis: ".Pegawai::find($paket->pivot->pegawai_id)->nama,'','',true));
             $printer->text($this->line('-'));
         }
         $printer->feed();
         $printer -> text($this->rows('',strtoupper($content->tipe_byr),''));
-        $printer -> text($this->rows('','Total :', formatRP(totalHarga($content)['harga'])));
+
+
+        $printer -> text($this->rows('','Harga :', formatRP(totalHarga($content)['total']),''));
+        $printer->text($this->rows('','Diskon :',formatRp($content->diskon),""));
+        $printer->text($this->rows('','Total Harga :',formatRp(totalHarga($content)['harga']),''));
+
         $printer -> text($this->rows('','Dibayar :', formatRp($content->totalbayar)));
         //$printer -> setEmphasis(false);
         // $printer -> setEmphasis(true);
@@ -84,7 +87,7 @@ class PrintController extends Controller
         $printer -> text($konfig->footnote.PHP_EOL);
         $printer -> feed();
         $printer -> text(Carbon::now('Asia/Makassar')->format('d/m/Y H:i') . " by ".Auth::user()->name."\n");
-        $printer -> text('Terapis: '.$content->pegawai->nama);
+        //$printer -> text('Terapis: '.$content->pegawai->nama);
         /* Cut the receipt and open the cash drawer */
         $printer->feed(2);
 
@@ -114,7 +117,7 @@ class PrintController extends Controller
             $detail->kembali=($trx->totalbayar)-totalHarga($trx)['harga'];
             $detail->jumlah_bayar=$trx->totalbayar;
             $detail->kasir=$trx->kasir->name;
-            $detail->terapis=$trx->pegawai->nama;
+            $detail->terapis=Pegawai::find($paket->pivot->pegawai_id)->nama;
             $detail->tgl_transaksi=now('Asia/Makassar')->format('Y-m-d H:i:s');
             $detail->save();
 

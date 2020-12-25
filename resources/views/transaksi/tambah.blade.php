@@ -29,12 +29,27 @@
 
                         </div>
                         <div class="form-group">
+                            <label for="pegawai">Pilih Terapis</label>
+                            <select class="form-control" id="pegawai" name="pegawai">
+                                <option value="" ><sub>Pilih Terapis</sub></option>
+                                @foreach(\App\Pegawai::all() as $item)
+                                    <option  value="{{ $item->id }}">{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                            <div class="text-danger pegawai">
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
                             <label for="qty">Jumlah </label>
                             <input type="number" class="form-control" min="1" step="1" id="qty" name="qty" value="1" placeholder="Masukkan jumlah" >
                             <div class="text-danger qty">
 
                             </div>
                         </div>
+
                         {{--<div class="form-group">--}}
                         {{--<label for="satuan">Satuan</label>--}}
                         {{--<input type="text" class="form-control" id="satuan" name="satuan" value="{{ old('satuan') }}" placeholder="Masukkan satuan dalam ml,lembar,pcs dll." >--}}
@@ -72,7 +87,7 @@
                 <form >
                     @csrf
                     <div class="modal-body">
-                        <div class="form-group">
+                        <div class="form-group col-9">
                             <label for="customer">Customer</label>
                             <select class="form-control{{ $errors->has('customer') ? ' is-invalid' : '' }}" id="customer" name="customer" >
                                 <option value="">Pilih Customer</option>
@@ -80,30 +95,14 @@
                                     <option {{ isset($transaksi) && $transaksi->customer_id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ $item->nama }}</option>
                                 @endforeach
                             </select>
-                            @if ($errors->has('Pegawai'))
+                            @if ($errors->has('customer'))
                                 <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('Pegawai') }}</strong>
-                                    </span>
-                            @endif
-
-                        </div>
-                        <div class="form-group">
-                            <label for="pegawai">Pegawai</label>
-                            <select class="form-control{{ $errors->has('pegawai') ? ' is-invalid' : '' }}" id="pegawai" name="pegawai" >
-                                <option value="">Pilih Pegawai</option>
-                                @foreach(\App\Pegawai::all() as $item)
-                                    <option {{ isset($transaksi) && $transaksi->pegawai_id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ $item->nama }}</option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('pegawai'))
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('pegawai') }}</strong>
+                                        <strong>{{ $errors->first('customer') }}</strong>
                                     </span>
                             @endif
 
                         </div>
 
-                        <small class="text-muted"><em>Cek kembali sebelum menyimpan</em></small>
                     </div>
                 </form>
             </div>
@@ -138,6 +137,8 @@
 
                     <small class="text-muted"><strong> Harga : {{ formatRp($paket->harga) }}</strong></small>
                     <br>
+                    <small class="text-muted"><strong> Terapis : {{ \App\Pegawai::find($paket->pivot->pegawai_id)->nama }}</strong></small>
+                    <br>
                     {{--<small class="text-muted"><strong> Diskon : {{ formatRp($paket->diskon)  }}</strong></small>--}}
                     {{--<br>--}}
                     <small class="text-muted"><strong> Jumlah Item : {{ $paket->pivot->qty  }}</strong></small>
@@ -147,6 +148,7 @@
                         $total+=$paket->pivot->qty*($paket->harga-$paket->diskon)
                         @endphp
                     <hr>
+
 
                     <div class="modal fade" id="tambahItemModal{{$paket->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
@@ -176,12 +178,26 @@
 
                                         </div>
                                         <div class="form-group">
+                                            <label>Pilih Terapis</label>
+                                            <select class="form-control" id="pegawai{{$paket->id}}" name="pegawai">
+                                                <option value="" ><sub>Pilih Terapis</sub></option>
+                                                @foreach(\App\Pegawai::all() as $item)
+                                                    <option  {{ $paket->pivot->pegawai_id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ $item->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="text-danger pegawai{{ $paket->id }}">
+
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
                                             <label for="qty{{$paket->id}}">Jumlah </label>
                                             <input type="number" class="form-control" min="1" step="1" id="qty{{$paket->id}}" name="qty" value="{{ $paket->pivot->qty }}" placeholder="Masukkan jumlah" >
                                             <div class="text-danger qty{{$paket->id}}">
 
                                             </div>
                                         </div>
+
                                         {{--<div class="form-group">--}}
                                         {{--<label for="satuan">Satuan</label>--}}
                                         {{--<input type="text" class="form-control" id="satuan" name="satuan" value="{{ old('satuan') }}" placeholder="Masukkan satuan dalam ml,lembar,pcs dll." >--}}
@@ -244,7 +260,6 @@
             $("#jumlah_byr").mask("#.##0", {reverse: true}).val("");
             $("#diskon").mask("#.##0", {reverse: true}).val("");
             $('#divcatatan').hide()
-            $('#pegawai').select2()
             $('#customer').select2()
             $('#tipe_byr').select2()
             if(getCookie('kode')===null){
@@ -376,6 +391,7 @@
                     _token:"{{ csrf_token() }}",
                     paket:$("#paket").val(),
                     qty:$("#qty").val(),
+                    pegawai:$('#pegawai').val(),
                     kode:kode
                 },success:function (s) {
                    if(s==='ok'){
@@ -407,7 +423,8 @@
                     _token:"{{ csrf_token() }}",
                     paket:$("#paket"+id).val(),
                     qty:$("#qty"+id).val(),
-                    kode:kode
+                    kode:kode,
+                    pegawai:$('#pegawai'+id).val()
                 },success:function (s) {
                     if(s==='ok'){
                         window.location.reload()

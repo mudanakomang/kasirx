@@ -28,14 +28,12 @@ class PegawaiController extends Controller
             'alamat'=>'required',
             'tgl_lahir'=>'required',
             'nomorhp'=>'numeric',
-            'email'=>'unique:pegawai'
         ];
         $messages=[
             'nama.required'=>'Nama pegawai harus diisi!',
             'alamat.required'=>'Alamat pegawai harus diisi!',
             'tgl_lahir.required'=>'Tanggal lahir harus diisi',
             'nomorhp.numeric'=>'Nomor Hp tidak valid!',
-            'email.unique'=>'Email sudah digunakan!'
         ];
         $validator=Validator::make($request->all(),$rules,$messages);
         if ($validator->fails()){
@@ -47,7 +45,12 @@ class PegawaiController extends Controller
             $pg->alamat=$request->alamat;
             $pg->tgl_lahir=Carbon::parse($request->tgl_lahir)->format('Y-m-d');
             $pg->nomorhp=$request->nomorhp;
-            $pg->email=$request->email;
+            if (empty($request->email)){
+                $email='';
+            }else{
+                $email=$request->email;
+            }
+            $pg->email=$email;
             $pg->save();
             return redirect('admin/pegawai');
         }

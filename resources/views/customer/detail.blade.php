@@ -25,6 +25,7 @@
                             <th>Paket Treatment</th>
                             <th>Harga</th>
                             <th>Qty</th>
+                            <th>Terapis</th>
                             {{--<th></th>--}}
                         </tr>
                         </thead>
@@ -37,6 +38,7 @@
                                 <td>{{ $item->paket }}</td>
                                 <td>{{ formatRp($item->harga_paket) }}</td>
                                 <td>{{ $item->paket_qty }}</td>
+                                <td>{{ $item->terapis }}</td>
                             </tr>
 
                         @endforeach

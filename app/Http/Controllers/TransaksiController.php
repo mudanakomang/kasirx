@@ -16,7 +16,7 @@ class TransaksiController extends Controller
     //
 
     public function index(){
-        $transaksi=Transaksi::all();
+        $transaksi=Transaksi::orderBy('created_at','asc')->get();
         return view('transaksi.index',['transaksi'=>$transaksi]);
     }
 
@@ -49,7 +49,7 @@ class TransaksiController extends Controller
     }
 
     public function saveTrx(Request $request){
-        Transaksi::updateOrCreate(['kode'=>$request->kode],['pegawai_id'=>$request->pegawai,'customer_id'=>$request->customer,'user_id'=>Auth::user()->id,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
+        Transaksi::updateOrCreate(['kode'=>$request->kode],['customer_id'=>$request->customer,'user_id'=>Auth::user()->id,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
         return response('ok');
     }
 
@@ -61,10 +61,12 @@ class TransaksiController extends Controller
             $rules=[
                 'paket'=>'required',
                 'qty'=>'required',
+                'pegawai'=>'required'
             ];
             $messages=[
                 'paket.required'=>"Paket harus dipilih!",
-                'qty.required'=>"Jumlah harus diisi!"
+                'qty.required'=>"Jumlah harus diisi!",
+                'pegawai.required'=>"Terapis harus dipilih!"
             ];
             $val=Validator::make($request->all(),$rules,$messages);
             if (!$val->fails()){
@@ -73,9 +75,9 @@ class TransaksiController extends Controller
 
                 if(!$pivot) {
                     $trx->paket()->attach($request->paket,
-                        ["qty" => $request->qty] );
+                        ["qty" => $request->qty,"pegawai_id"=>$request->pegawai] );
                 }else{
-                    $trx->paket()->updateExistingPivot($request->paket,['qty' => $request->qty],false );
+                    $trx->paket()->updateExistingPivot($request->paket,['qty' => $request->qty,"pegawai_id"=>$request->pegawai],false );
                 }
                 return response('ok');
             }else{
@@ -91,10 +93,12 @@ class TransaksiController extends Controller
         $rules=[
             'paket'=>'required',
             'qty'=>'required',
+            'pegawai'=>'required',
         ];
         $messages=[
             'paket.required'=>"Paket harus dipilih!",
-            'qty.required'=>"Jumlah harus diisi!"
+            'qty.required'=>"Jumlah harus diisi!",
+            'pegawai.required'=>"Terapis harus dipilih!"
         ];
         $val=Validator::make($request->all(),$rules,$messages);
         if (!$val->fails()){
@@ -103,9 +107,9 @@ class TransaksiController extends Controller
 
             if(!$pivot) {
                 $trx->paket()->attach($request->paket,
-                    ["qty" => $request->qty] );
+                    ["qty" => $request->qty,'pegawai_id'=>$request->pegawai] );
             }else{
-                $trx->paket()->updateExistingPivot($request->paket,['qty' => $request->qty],false );
+                $trx->paket()->updateExistingPivot($request->paket,['qty' => $request->qty,'pegawai_id'=>$request->pegawai],false );
             }
             return response('ok');
         }else{

@@ -30,6 +30,19 @@
 
                         </div>
                         <div class="form-group">
+                            <label>Pilih Terapis</label>
+                            <select class="form-control" id="pegawai" name="pegawai">
+                                <option value="" ><sub>Pilih Terapis</sub></option>
+                                @foreach(\App\Pegawai::all() as $item)
+                                    <option  value="{{ $item->id }}">{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                            <div class="text-danger pegawai">
+
+                            </div>
+
+                        </div>
+                        <div class="form-group">
                             <label for="qty">Jumlah </label>
                             <input type="number" class="form-control" min="1" step="1" id="qty" name="qty" value="1" placeholder="Masukkan jumlah" >
                             <div class="text-danger qty">
@@ -116,7 +129,7 @@
                     <p>Status</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ $transaksi->print== 'n' ? "Belum dicetak":"Sudah dicetak" }}</strong></p>
+                    <p><strong class="{{ !empty($transaksi->transaksiBatal) ? 'text-danger':'' }}">{{ $transaksi->print== 'n' ? "Belum dicetak":(!empty($transaksi->transaksiBatal) ? "Batal":"Sudah dicetak") }}</strong></p>
                 </div>
             </div>
 
@@ -153,6 +166,8 @@
 
                 <small class="text-muted"><strong> Harga : {{ formatRp($paket->harga) }}</strong></small>
                 <br>
+                <small class="text-muted"><strong> Terapis : {{ \App\Pegawai::find($paket->pivot->pegawai_id)->nama }}</strong></small>
+                <br>
                 <small class="text-muted"><strong> Jumlah Item : {{ $paket->pivot->qty  }}</strong></small>
                 <br>
                 <small class="text-muted"><strong> Subtotal : {{ formatRp($paket->pivot->qty*($paket->harga-$paket->diskon))  }}</strong></small>
@@ -184,6 +199,19 @@
                                         @endforeach
                                     </select>
                                     <div class="text-danger paket{{ $paket->id }}">
+
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label>Pilih Terapis</label>
+                                    <select class="form-control" id="pegawai{{$paket->id}}" name="pegawai">
+                                        <option value="" ><sub>Pilih Terapis</sub></option>
+                                        @foreach(\App\Pegawai::all() as $item)
+                                            <option {{ $paket->pivot->pegawai_id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="text-danger pegawai{{ $paket->id }}">
 
                                     </div>
 
@@ -240,22 +268,98 @@
             </div>
 
             <div class="form-group">
-                @if($transaksi->print=="n")
+                @if($transaksi->print=="n" )
                 <button id="cetak" class="btn btn-success"><i class="fa fa-print"></i> Cetak</button>
                 <button id="simpan" onclick="simpanAkhir();" class="btn btn-info"><i class="fa fa-save"></i> Simpan</button>
+                @elseif($transaksi->print=='y' && empty($transaksi->transaksiBatal))
+                 <button id="cetak" class="btn btn-success"><i class="fa fa-print"></i> Cetak Ulang</button>
                 @endif
             </div>
         </div>
     </div>
 @endsection
 @section('script')
+    <script type="text/javascript">
+        function setCookie(key, value, expiry) {
+            var expires = new Date();
+            expires.setTime(expires.getTime() + (expiry * 24 * 60 * 60 * 1000));
+            document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+        }
+
+        function getCookie(key) {
+            var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+            return keyValue ? keyValue[2] : null;
+        }
+
+        function eraseCookie(key) {
+            var keyValue = getCookie(key);
+            setCookie(key, keyValue, '-1');
+        }
+
+        function simpanItem() {
+            var kode=getCookie('kode')
+            $.ajax({
+                url:"{{ route('trx.item.add') }}",
+                type:"POST",
+                data:{
+                    _token:"{{ csrf_token() }}",
+                    paket:$("#paket").val(),
+                    qty:$("#qty").val(),
+                    pegawai:$('#pegawai').val(),
+                    kode:kode
+                },success:function (s) {
+                    if(s==='ok'){
+                        window.location.reload()
+                    }else if (s==='exists'){
+                        Swal.fire({
+                            title: 'Item sudah ada',
+                            text: "Item sudah ditamhkan, mohon diupdate",
+                            icon: 'warning',
+                        })
+                    }else{
+                        $.each($('div.text-danger'),function (k,v) {
+                            $(this).text("")
+                        })
+                        $.each(s,function (k,v) {
+                            $('div.'+k).text("").text(v)
+                        })
+                    }
+                }
+            })
+        }
+        function updateItem(itemid) {
+            var id=itemid.replace("item","")
+            var kode=getCookie('kode')
+            $.ajax({
+                url:"{{ route('trx.item.update') }}",
+                type:"POST",
+                data:{
+                    _token:"{{ csrf_token() }}",
+                    paket:$("#paket"+id).val(),
+                    qty:$("#qty"+id).val(),
+                    kode:kode,
+                    pegawai:$('#pegawai'+id).val()
+                },success:function (s) {
+                    if(s==='ok'){
+                        window.location.reload()
+                    }else {
+                        $.each($('div.text-danger'),function (k,v) {
+                            $(this).text("")
+                        })
+                        $.each(s,function (k,v) {
+                            $('div.'+k+id).text("").text(v)
+                        })
+                    }
+                }
+            })
+        }
+    </script>
 <script>
     $(document).ready(function () {
 
         $("#jumlah_byr").mask("#.##0", {reverse: true}).val($.number("{{ $transaksi->totalbayar }}",0,"."));
         $("#diskon").mask("#.##0", {reverse: true}).val($.number("{{ $transaksi->diskon }}",0,"."));
         $('#divcatatan').hide()
-        $('#pegawai').select2()
         $('#tipe_byr').select2()
         $('#cetak').attr("disabled","disabled")
         $('#cetak').css("cursor","not-allowed")
@@ -285,6 +389,7 @@
            $(".cetak").attr("disabled","disabled")
            $(".cetak").css("cursor","not-allowed")
        }
+       $('#jumlah_byr').change()
 
    })
     $('#diskon').on('change keyup keydown paste',function () {
@@ -356,7 +461,8 @@
                 _token:"{{ csrf_token() }}",
                 paket:$("#paket").val(),
                 qty:$("#qty").val(),
-                kode:kode
+                kode:kode,
+                pegawai:$('#pegawai').val()
             },success:function (s) {
                 if(s==='ok'){
                     window.location.reload()
@@ -387,7 +493,8 @@
                 _token:"{{ csrf_token() }}",
                 paket:$("#paket"+id).val(),
                 qty:$("#qty"+id).val(),
-                kode:kode
+                kode:kode,
+                pegawai:$('#pegawai'+id).val()
             },success:function (s) {
                 if(s==='ok'){
                     window.location.reload()
@@ -476,7 +583,7 @@
                             trxid:"{{ isset($transaksi) ? $transaksi->id:0}}"
                         },success:function (s) {
                             if(s==='ok'){
-                                //eraseCookie('kode')
+                                eraseCookie('kode')
                                 window.location.href="{{ url('transaksi') }}"
                             }
                         }

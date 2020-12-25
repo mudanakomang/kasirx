@@ -34,7 +34,6 @@
                         </thead>
                         <tbody>
                         @foreach($transaksi as $key=>$item)
-
                             <tr class="{{ $item[0]->status=="batal" ? 'table-danger':'' }}">
                                 <td></td>
                                 <td><a href="{{ url('customer/transaksi/detail/').'/'.$key }}">{{ $key }}</a> </td>
