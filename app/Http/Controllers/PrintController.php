@@ -45,7 +45,7 @@ class PrintController extends Controller
         $konfig=Konfigurasi::first();
         $conn=new WindowsPrintConnector($connector);
         $printer=new Printer($conn);
-        $printer->setLineSpacing(16);
+        $printer->setLineSpacing(32);
         $printer->setFont(Printer::FONT_C);
         $printer->setJustification(Printer::JUSTIFY_CENTER);
 //        $printer->setTextSize(1,1);
@@ -73,10 +73,10 @@ class PrintController extends Controller
         $printer -> text($this->rows('',strtoupper($content->tipe_byr),''));
 
 
-        $printer->text($this->rows('','Total :',formatRp(totalHarga($content)['harga']),''));
-        //$printer -> text($this->rows('','Harga :', formatRP(totalHarga($content)['total']),''));
-        $printer->text($this->rows('','Diskon :',formatRp($content->diskon),""));
 
+        $printer -> text($this->rows('','Harga :', formatRP(totalHarga($content)['total']),''));
+        $printer->text($this->rows('','Diskon :',formatRp($content->diskon),""));
+        $printer->text($this->rows('','Total :',formatRp(totalHarga($content)['harga']),''));
 
         $printer -> text($this->rows('','Dibayar :', formatRp($content->totalbayar)));
         //$printer -> setEmphasis(false);
