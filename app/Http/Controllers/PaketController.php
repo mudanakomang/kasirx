@@ -29,6 +29,12 @@ class PaketController extends Controller
        return response('success');
     }
 
+    public  function hapus(Request $request){
+        $paket=Paket::find($request->id);
+        $paket->delete();
+        return response('success');
+    }
+
     public function jasaHapus(Request $request){
         $paket=Paket::find($request->paket_id);
         $paket->jasa()->detach($request->jasa_id);

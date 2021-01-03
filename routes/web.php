@@ -59,6 +59,7 @@ Route::group(['middleware'=>['auth','roles']],function(){
         Route::post('user/hapus','PegawaiController@hapusUser')->name('user.hapus');
 
         Route::get('paket','PaketController@index');
+        Route::post('paket/hapus','PaketController@hapus')->name('paket.hapus');
         Route::get('paket/tambah','PaketController@tambahPaket');
         Route::post('paket/tambah','PaketController@simpanPaket')->name('paket.tambah');
         Route::get('paket/detail/{id}','PaketController@detail');
@@ -75,6 +76,7 @@ Route::group(['middleware'=>['auth','roles']],function(){
     Route::get('transaksi','TransaksiController@index');
     Route::get('transaksi/tambah','TransaksiController@tambahTransaksi');
     Route::get('transaksi/detail/{id}','TransaksiController@detail');
+    Route::get('transaksi/detailx/{id}','TransaksiController@detailx');
     Route::post('transaksi/cetak','PrintController@cetakTrx')->name('trx.cetak');
     Route::post('transaksi/cek','TransaksiController@cekTrx')->name('trx.cek');
     Route::post('transaksi/tambah','TransaksiController@saveTrx')->name('trx.tambah');
@@ -86,6 +88,8 @@ Route::group(['middleware'=>['auth','roles']],function(){
     Route::post('transaksi/batal','TransaksiController@batalTrx')->name('trx.batal');
     Route::get('dashboard','DashboardController@index');
     Route::get('profil','DashboardController@profil');
+    Route::post('dashboard/inventory','DashboardController@inventory')->name('dashboard.inventory');
+    Route::post('dashboard/profit','DashboardController@profit')->name('dashboard.profit');
     Route::post('profil/update','PegawaiController@profilUpdate')->name('profil.update');
 
     Route::get('customer','CustomerController@index');
@@ -95,4 +99,8 @@ Route::group(['middleware'=>['auth','roles']],function(){
     Route::post('customer/update','CustomerController@update')->name('customer.update');
     Route::get('customer/transaksi/{id}','CustomerController@transaksi');
     Route::get('customer/transaksi/detail/{kode}','CustomerController@detail');
+
+    Route::get('laporan/transaksi','LaporanController@transaksi');
+    Route::post('laporan/transaksi','LaporanController@transaksiPost')->name('laporan.post');
+    Route::post('laporan/transaksi/export','LaporanController@exportTransaksi')->name('transaksi.export');
 });

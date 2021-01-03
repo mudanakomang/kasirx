@@ -1,7 +1,5 @@
 @extends('layouts.master')
 @section('content')
-
-
     <div class="modal fade" id="tambahItemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -81,7 +79,7 @@
         {{--</div>--}}
         {{--<div class="card-footer small text-muted"></div>--}}
         {{--</div>--}}
-        <h2>Detail Transaksi #{{ $transaksi->kode }}</h2>
+        <h2>Detail Transaksi #{{ $transaksi->first()->kode_transaksi }}</h2>
         <hr>
         <div class="col-sm-12 col-md-8 col-lg-8">
             <div class="row">
@@ -89,7 +87,7 @@
                     <p>Kode Transaksi</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>#{{$transaksi->kode}}</strong></p>
+                    <p><strong>#{{$transaksi->first()->kode_transaksi}}</strong></p>
                 </div>
             </div>
             <div class="row">
@@ -97,7 +95,7 @@
                     <p>Pembayaran</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ strtoupper($transaksi->tipe_byr) }}</strong></p>
+                    <p><strong>{{ !empty($transaksi->first()->transaksi->tipe_byr) ? strtoupper($transaksi->first()->transaksi->tipe_byr):""  }}</strong></p>
                 </div>
             </div>
             <div class="row">
@@ -105,7 +103,7 @@
                     <p>Customer</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ $transaksi->customer->nama }}</strong></p>
+                    <p><strong>{{ $transaksi->first()->pelanggan->nama }}</strong></p>
                 </div>
             </div>
             <div class="row">
@@ -113,7 +111,7 @@
                     <p>Total Harga</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ formatRp(totalHarga($transaksi)['total']) }}</strong></p>
+                    <p><strong>{{ formatRp(totalHarga($transaksi->first()->transaksi)['total']) }}</strong></p>
                 </div>
             </div>
             <div class="row">
@@ -121,7 +119,7 @@
                     <p>Total Diskon</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ formatRp(totalHarga($transaksi)['diskon']) }}</strong></p>
+                    <p><strong>{{ formatRp(totalHarga($transaksi->first()->transaksi)['diskon']) }}</strong></p>
                 </div>
             </div>
             <div class="row">
@@ -129,7 +127,7 @@
                     <p>Pembayaran</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ formatRp(totalHarga($transaksi)['harga']) }}</strong></p>
+                    <p><strong>{{ formatRp(totalHarga($transaksi->first()->transaksi)['harga']) }}</strong></p>
                 </div>
             </div>
             <div class="row">
@@ -137,7 +135,7 @@
                     <p>Status</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong class="{{ !empty($transaksi->transaksiBatal) ? 'text-danger':'' }}">{{ $transaksi->print== 'n' ? "Belum dicetak":(!empty($transaksi->transaksiBatal) ? "Batal":"Sudah dicetak") }}</strong></p>
+                    <p><strong class="{{ !empty($transaksi->first()->transaksiBatal) ? 'text-danger':'' }}">{{ $transaksi->first()->transaksi->print== 'n' ? "Belum dicetak":(!empty($transaksi->first()->transaksi->transaksiBatal) ? "Batal":"Sudah dicetak") }}</strong></p>
                 </div>
             </div>
 
@@ -146,7 +144,7 @@
                     <p>Tanggal</p>
                 </div>
                 <div class="  col-sm-6 col-md-4 col-lg-4">
-                    <p><strong>{{ \Carbon\Carbon::parse($transaksi->created_at)->timezone('Asia/Makassar')->format('d/m/Y H:i') }}</strong></p>
+                    <p><strong>{{ \Carbon\Carbon::parse($transaksi->first()->transaksi->created_at)->timezone('Asia/Makassar')->format('d/m/Y H:i') }}</strong></p>
                 </div>
             </div>
 
@@ -157,7 +155,7 @@
             <div class=>
                 <h3>Detail Item </h3>
             </div>
-            @if($transaksi->print=='n')
+            @if($transaksi->first()->transaksi->print=='n')
             <div>
                 <p class="float-right"><a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#tambahItemModal" ><i class="fa fa-plus"></i> Tambah Item</a> </p>
             </div>
@@ -167,79 +165,79 @@
         @php
             $total=0
         @endphp
-        @foreach($transaksi->paket as $key=>$paket)
+        @foreach($transaksi as $key=>$paket)
             <div id="div{{$paket->id}}">
 
                     <div class="input-group" >
-                        @if($transaksi->print=='n')
+                        @if($transaksi->first()->transaksi->print=='n')
                    <span class="input-group-btn">
                         <button type="button" id="{{ $paket->id }}" onclick="event.preventDefault(); hapusItem(this.id);" class="btn btn-danger btn-sm"><i class="fa fa-minus"></i></button>
                         <a href="#" data-toggle="modal" data-target="#editItemModal{{ $paket->id }}"  class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
                     </span> &nbsp;
                         @endif
-                        <p><strong>#{{ (string)($key+1)."  ".$paket->nama }}</strong></p>
+                        <p><strong>#{{ (string)($key+1)."  ".$paket->paket }}</strong></p>
 
                     </div>
 
-                <small class="text-muted"><strong> Harga : {{ formatRp($paket->harga) }}</strong></small>
+                <small class="text-muted"><strong> Harga : {{ formatRp($paket->harga_paket) }}</strong></small>
                 <br>
-                <small class="text-muted"><strong> Terapis : {{ \App\Pegawai::find($paket->pivot->pegawai_id)->nama }}</strong></small>
+                <small class="text-muted"><strong> Terapis : {{ $paket->terapis }}</strong></small>
                 <br>
-                <small class="text-muted"><strong> Jumlah Item : {{ $paket->pivot->qty  }}</strong></small>
+                <small class="text-muted"><strong> Jumlah Item : {{ $paket->paket_qty  }}</strong></small>
                 <br>
-                <small class="text-muted"><strong> Subtotal : {{ formatRp($paket->pivot->qty*($paket->harga-$paket->diskon))  }}</strong></small>
+                {{--<small class="text-muted"><strong> Subtotal : {{ formatRp($paket->total_harga)  }}</strong></small>--}}
                     @php
-                        $total+=$paket->pivot->qty*($paket->harga-$paket->diskon);
+                        $total+=$paket->total_harga;
                     @endphp
                 <hr>
             </div>
-            <div class="modal fade" id="editItemModal{{$paket->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title" id="exampleModalLabel">
-                                <i class="fa fa-tag"></i>
-                                Edit Item
-                            </h5>
-                            <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <form class="" id="formItem">
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label>Pilih Paket</label>
-                                    <select class="form-control" id="paket{{$paket->id}}" name="paket">
-                                        <option value="" ><sub>Pilih Paket</sub></option>
-                                        @foreach(\App\Paket::all() as $item)
-                                            <option  {{ statusPaket($item)==0 ? "disabled":"" }} {{ $paket->id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ statusPaket($item)==0 ? $item->nama." -- (Tidak aktif, periksa stok)":$item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="text-danger paket{{ $paket->id }}">
+            {{--<div class="modal fade" id="editItemModal{{$paket->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">--}}
+                {{--<div class="modal-dialog modal-lg" role="document">--}}
+                    {{--<div class="modal-content">--}}
+                        {{--<div class="modal-header bg-primary text-white">--}}
+                            {{--<h5 class="modal-title" id="exampleModalLabel">--}}
+                                {{--<i class="fa fa-tag"></i>--}}
+                                {{--Edit Item--}}
+                            {{--</h5>--}}
+                            {{--<button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">--}}
+                                {{--<span aria-hidden="true">×</span>--}}
+                            {{--</button>--}}
+                        {{--</div>--}}
+                        {{--<form class="" id="formItem">--}}
+                            {{--<div class="modal-body">--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<label>Pilih Paket</label>--}}
+                                    {{--<select class="form-control" id="paket{{$paket->id}}" name="paket">--}}
+                                        {{--<option value="" ><sub>Pilih Paket</sub></option>--}}
+                                        {{--@foreach(\App\Paket::all() as $item)--}}
+                                            {{--<option  {{ statusPaket($item)==0 ? "disabled":"" }} {{ $paket->id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ statusPaket($item)==0 ? $item->nama." -- (Tidak aktif, periksa stok)":$item->nama }}</option>--}}
+                                        {{--@endforeach--}}
+                                    {{--</select>--}}
+                                    {{--<div class="text-danger paket{{ $paket->id }}">--}}
 
-                                    </div>
+                                    {{--</div>--}}
 
-                                </div>
-                                <div class="form-group">
-                                    <label>Pilih Terapis</label>
-                                    <select class="form-control" id="pegawai{{$paket->id}}" name="pegawai">
-                                        <option value="" ><sub>Pilih Terapis</sub></option>
-                                        @foreach(\App\Pegawai::all() as $item)
-                                            <option {{ $paket->pivot->pegawai_id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="text-danger pegawai{{ $paket->id }}">
+                                {{--</div>--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<label>Pilih Terapis</label>--}}
+                                    {{--<select class="form-control" id="pegawai{{$paket->id}}" name="pegawai">--}}
+                                        {{--<option value="" ><sub>Pilih Terapis</sub></option>--}}
+                                        {{--@foreach(\App\Pegawai::all() as $item)--}}
+                                            {{--<option {{ $paket->pivot->pegawai_id==$item->id ? "selected":"" }} value="{{ $item->id }}">{{ $item->nama }}</option>--}}
+                                        {{--@endforeach--}}
+                                    {{--</select>--}}
+                                    {{--<div class="text-danger pegawai{{ $paket->id }}">--}}
 
-                                    </div>
+                                    {{--</div>--}}
 
-                                </div>
-                                <div class="form-group">
-                                    <label for="qty{{$paket->id}}">Jumlah </label>
-                                    <input type="number" class="form-control" min="1" step="1" id="qty{{$paket->id}}" name="qty" value="{{ $paket->pivot->qty }}" placeholder="Masukkan jumlah" >
-                                    <div class="text-danger qty{{$paket->id}}">
+                                {{--</div>--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<label for="qty{{$paket->id}}">Jumlah </label>--}}
+                                    {{--<input type="number" class="form-control" min="1" step="1" id="qty{{$paket->id}}" name="qty" value="{{ $paket->pivot->qty }}" placeholder="Masukkan jumlah" >--}}
+                                    {{--<div class="text-danger qty{{$paket->id}}">--}}
 
-                                    </div>
-                                </div>
+                                    {{--</div>--}}
+                                {{--</div>--}}
                                 {{--<div class="form-group">--}}
                                 {{--<label for="satuan">Satuan</label>--}}
                                 {{--<input type="text" class="form-control" id="satuan" name="satuan" value="{{ old('satuan') }}" placeholder="Masukkan satuan dalam ml,lembar,pcs dll." >--}}
@@ -247,20 +245,20 @@
 
                                 {{--</div>--}}
                                 {{--</div>--}}
-                                <small class="text-muted"><em>Periksa kembali sebelum menyimpan!</em></small>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                <input type="submit" class="btn btn-primary" onclick="event.preventDefault();updateItem(this.id)" id="item{{$paket->id}}" value="Simpan">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                                {{--<small class="text-muted"><em>Periksa kembali sebelum menyimpan!</em></small>--}}
+                            {{--</div>--}}
+                            {{--<div class="modal-footer">--}}
+                                {{--<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>--}}
+                                {{--<input type="submit" class="btn btn-primary" onclick="event.preventDefault();updateItem(this.id)" id="item{{$paket->id}}" value="Simpan">--}}
+                            {{--</div>--}}
+                        {{--</form>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
         @endforeach
         <div class="col-sm-12 col-md-8 col-lg-8">
             <div class="d-flex justify-content-between">
-                <div> <h3 id="total">Total {{ isset($total) ? formatRp($total-$transaksi->diskon):"" }}</h3></div>
+                <div> <h3 id="total">Total {{ formatRp(totalHarga($transaksi->first()->transaksi)['harga']) }}</h3></div>
                 <div><h3 id="kembali">Kembali </h3></div>
             </div>
             <div class="form-group">
@@ -277,18 +275,18 @@
             </div>
             <div class="form-group">
                 <label for="diskon">Diskon</label>
-                <input type="text" pattern="\d*" class="form-control" id="diskon" value="{{ isset($transaksi) ? $transaksi->diskon:""}}" name="diskon" onchange="updateKembali()" onpaste="updateKembali()" onkeyup="updateKembali()">
+                <input type="text" pattern="\d*" class="form-control" id="diskon" value="{{ isset($transaksi->first()->transaksi) ? $transaksi->first()->transaksi->diskon:""}}" name="diskon" onchange="updateKembali()" onpaste="updateKembali()" onkeyup="updateKembali()">
             </div>
                         <div class="form-group">
                 <label for="jumlah_byr">Jumlah Pembayaran</label>
-                <input type="text" pattern="\d*" class="form-control" id="jumlah_byr" value="{{  $transaksi->totalbayar }}" name="jumlah_byr" onchange="updateKembali()" onpaste="updateKembali()" onkeyup="updateKembali()">
+                <input type="text" pattern="\d*" class="form-control" id="jumlah_byr" value="{{  $transaksi->first()->jumlah_bayar }}" name="jumlah_byr" onchange="updateKembali()" onpaste="updateKembali()" onkeyup="updateKembali()">
             </div>
 
             <div class="form-group">
-                @if($transaksi->print=="n" )
+                @if($transaksi->first()->transaksi->print=="n" )
                 <button id="cetak" class="btn btn-success"><i class="fa fa-print"></i> Cetak</button>
                 <button id="simpan" onclick="simpanAkhir();" class="btn btn-info"><i class="fa fa-save"></i> Simpan</button>
-                @elseif($transaksi->print=='y' && empty($transaksi->transaksiBatal))
+                @elseif($transaksi->first()->transaksi->print=='y' && empty($transaksi->first()->transaksi->transaksiBatal))
                  <button id="cetak" class="btn btn-success"><i class="fa fa-print"></i> Cetak Ulang</button>
                 @endif
             </div>
@@ -374,12 +372,13 @@
 <script>
     $(document).ready(function () {
 
-        $("#jumlah_byr").mask("#.##0", {reverse: true}).val($.number("{{ $transaksi->totalbayar }}",0,"."));
-        $("#diskon").mask("#.##0", {reverse: true}).val($.number("{{ $transaksi->diskon }}",0,"."));
+        $("#jumlah_byr").mask("#.##0", {reverse: true}).val($.number("{{ $transaksi->first()->jumlah_bayar }}",0,"."));
+        $("#diskon").mask("#.##0", {reverse: true}).val($.number("{{ $transaksi->first()->diskon }}",0,"."));
         $('#divcatatan').hide()
         $('#tipe_byr').select2()
         $('#cetak').attr("disabled","disabled")
         $('#cetak').css("cursor","not-allowed")
+        $('#total').text('Total Harga: Rp.'+$.number("{{ $transaksi->first()->harga_pokok }}",0,"."))
         updateKembali()
     })
     function cetakTrx(id) {
@@ -398,7 +397,7 @@
     }
 
    $(document).ready(function () {
-       var status="{{ $transaksi->print }}"
+       var status="{{ $transaksi->first()->transaksi->print }}"
        if (status==="n"){
            $(".cetak").removeAttr("disabled")
            $(".cetak").css("cursor","hand")
@@ -410,7 +409,7 @@
 
    })
     $('#diskon').on('change keyup keydown paste',function () {
-        var total=parseInt("{{ isset($total) ? $total:0 }}")
+        var total=parseInt("{{ $transaksi->first()->harga_pokok }}")
         var val=this.value
         val=parseInt(val.replace(/\,/g,'').replace(/\./g,''))
         if(this.value==""){
@@ -426,7 +425,7 @@
         }else{
             $('#divcatatan').show()
         }
-        var total="{{ isset($total) ? $total:"" }}"
+        var total="{{ $transaksi->first()->total_harga }}"
         this.value==="cash" || this.value==="" ? $("#jumlah_byr").val(""):$("#jumlah_byr").val($.number(total,0,','))
 
 
@@ -434,7 +433,7 @@
 
     $("#jumlah_byr").on("change keyup keypress paste",function () {
         if(!this.value=="0" || !this.value==""){
-            var total=parseInt("{{ isset($total) ? $total:0 }}")
+            var total=parseInt("{{ $transaksi->first()->total_harga }}")
             if($("#diskon").val()!==""){
                 var diskon=parseInt($("#diskon").val().replace(/\,/g,'').replace(/\./g,''))
 
@@ -442,7 +441,7 @@
                 diskon=0
             }
 
-            console.log(diskon)
+
             var val=this.value
             val=parseInt(val.replace(/\,/g,'').replace(/\./g,''))
             if(val>=total-diskon){
@@ -460,7 +459,7 @@
         var diskon=$("#diskon").val()
         diskon=parseInt(diskon.replace(/\,/g,'').replace(/\./g,''))
         jum=parseInt(jum.replace(/\,/g,'').replace(/\./g,''))
-        var total=parseInt({{ isset( $total) ?  $total:0  }})-diskon
+        var total=parseInt({{ $transaksi->first()->harga_pokok  }})-diskon
         if(jum>total){
             kembali=jum-total;
             $("#kembali").text("")
@@ -470,7 +469,7 @@
         }
     }
     function simpanItem() {
-        var kode="{{ $transaksi->kode }}"
+        var kode="{{ $transaksi->first()->kode_transaksi }}"
         $.ajax({
             url:"{{ route('trx.item.add') }}",
             type:"POST",
@@ -502,7 +501,7 @@
     }
     function updateItem(itemid) {
         var id=itemid.replace("item","")
-        var kode="{{ $transaksi->kode }}"
+        var kode="{{ $transaksi->first()->kode_transaksi }}"
         $.ajax({
             url:"{{ route('trx.item.update') }}",
             type:"POST",
@@ -528,7 +527,7 @@
     }
     function simpanAkhir(){
 
-        var trxid="{{ isset($transaksi) ? $transaksi->id:0 }}"
+        var trxid="{{ isset($transaksi->first()->transaksi) ? $transaksi->first()->transaksi->id:0 }}"
         var tipe_byr=$("#tipe_byr").val()
         var jumlah_byr=$("#jumlah_byr").val()
         var catatan=$("#catatan").val()
@@ -566,7 +565,7 @@
 
     $("#cetak").on("click",function () {
 
-        var trxid="{{  $transaksi->id }}"
+        var trxid="{{  $transaksi->first()->transaksi->id }}"
         var tipe_byr=$("#tipe_byr").val()
         var jumlah_byr=$("#jumlah_byr").val()
         var catatan=$("#catatan").val()
@@ -597,7 +596,7 @@
                         type:"POST",
                         data:{
                             _token:"{{ csrf_token() }}",
-                            trxid:"{{ isset($transaksi) ? $transaksi->id:0}}"
+                            trxid:"{{ isset($transaksi->first()->transaksi) ? $transaksi->first()->transaksi->id:0}}"
                         },success:function (s) {
                             if(s==='ok'){
                                 eraseCookie('kode')
@@ -615,7 +614,7 @@
     })
 
     function hapusItem(id){
-        var kode="{{ $transaksi->kode }}"
+        var kode="{{ $transaksi->first()->kode_transaksi }}"
 
         Swal.fire({
             title: 'Apakah anda yakin?',

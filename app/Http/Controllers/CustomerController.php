@@ -58,4 +58,5 @@ class CustomerController extends Controller
         $detail=DetailTransaksi::where('kode_transaksi',$kode)->get();
         return view('customer.detail',['detail'=>$detail]);
     }
+
 }

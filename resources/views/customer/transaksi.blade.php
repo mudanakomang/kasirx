@@ -17,7 +17,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="detailTrx" width="100%" cellspacing="0">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -34,7 +34,7 @@
                         </thead>
                         <tbody>
                         @foreach($transaksi as $key=>$item)
-                            <tr class="{{ $item[0]->status=="batal" ? 'table-danger':'' }}">
+                            <tr class="{{ $item[0]->status=="batal" ? 'table-danger':($item[0]->status=='selesai' ? 'table-success':'') }}">
                                 <td></td>
                                 <td><a href="{{ url('customer/transaksi/detail/').'/'.$key }}">{{ $key }}</a> </td>
                                 <td>{{ formatRp($item[0]->harga_pokok) }}</td>
@@ -42,8 +42,8 @@
                                 <td>{{ formatRp($item[0]->jumlah_bayar) }}</td>
                                 <td>{{ $item[0]->kasir}}</td>
                                 <td>{{ $item[0]->terapis }}</td>
-                                <td>{{ \Carbon\Carbon::parse($item[0]->tgl_transaksi)->format('Y-m-d') }}</td>
-                                <td>{{ $item[0]->status=='selesai' ? "Selesai":"Dibatalkan" }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item[0]->tgl_transaksi)->format('Y-m-d H:i') }}</td>
+                                <td>{{ $item[0]->status=='selesai' ? "Selesai":($item[0]->status=='pending' ? 'Belum Selesai':'Dibatalkan') }}</td>
                             </tr>
 
                            @endforeach
@@ -59,6 +59,8 @@
 @endsection
 @section('script')
     <script>
-
+        $('#detailTrx').DataTable({
+            order:[[7,'desc']]
+        })
     </script>
 @endsection

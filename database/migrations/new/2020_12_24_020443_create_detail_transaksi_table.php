@@ -29,7 +29,7 @@ class CreateDetailTransaksiTable extends Migration
             $table->float('kembali',12,2);
             $table->string('kasir');
             $table->string('terapis');
-            $table->enum('status',['selesai','batal'])->default('selesai');
+            $table->enum('status',['selesai','pending','batal'])->default('selesai');
             $table->dateTime('tgl_transaksi');
             $table->dateTime('tgl_batal')->nullable();
 

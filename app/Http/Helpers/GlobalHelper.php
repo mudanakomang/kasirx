@@ -35,9 +35,16 @@ function statusPaket($paket){
 function totalHarga($transaksi){
     $total=0;
     $harga=[];
+    $biaya=0;
     foreach ($transaksi->paket as $paket){
         $qty=$paket->pivot->qty;
         $total+=$paket->harga*$qty;
+        foreach ($paket->barang as $barang){
+            $biaya+=$barang->harga*$barang->pivot->kebutuhan*$qty;
+        }
+        foreach ($paket->jasa as $jasa) {
+            $biaya+=$jasa->harga*$qty;
+        }
     }
 
     $totalbyr=$total-$transaksi->diskon;
@@ -45,6 +52,7 @@ function totalHarga($transaksi){
     $harga['total']=$total;
     $harga['diskon']=$transaksi->diskon;
     $harga['harga']=$totalbyr;
+    $harga['biaya']=$biaya;
     return $harga;
 
 }
@@ -104,4 +112,24 @@ function grosProfit(){
     }
 
     return ['omzet'=>formatRp($omzet),'profit'=>formatRp($profit)];
+}
+
+function OmsetProfit(){
+    $omset=0;
+    $biaya=0;
+    $profit=0;
+    $tr=\App\DetailTransaksi::whereDate('updated_at',today('Asia/Makassar'))->where('status','selesai')->get();
+    foreach ($tr->unique('kode_transaksi') as $t){
+        $omset+=$t->total_harga;
+        $biaya+=$t->total_biaya;
+    }
+    $profit+=$omset-$biaya;
+    return ['omset'=>formatRp($omset),'profit'=>formatRp($profit)];
+}
+
+function randomColor(){
+
+    $s= sprintf('#%06X', mt_rand(0x00FF00, 0xFFFF00));
+    return (string)$s;
+
 }

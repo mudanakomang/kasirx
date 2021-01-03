@@ -106,23 +106,26 @@ class PrintController extends Controller
 
 
         foreach ($trx->paket as $paket){
-            $detail=new DetailTransaksi();
-            $detail->transaksi_id=$trx->id;
-            $detail->kode_transaksi=$trx->kode;
-            $detail->customer=$trx->customer_id;
-            $detail->paket=$paket->nama;
-            $detail->harga_paket=$paket->harga;
-            $detail->paket_qty=$paket->pivot->qty;
-            $detail->harga_pokok=totalHarga($trx)['total'];
-            $detail->diskon=$trx->diskon;
-            $detail->total_harga=totalHarga($trx)['total']-$trx->diskon;
-            $detail->kembali=($trx->totalbayar)-totalHarga($trx)['harga'];
-            $detail->jumlah_bayar=$trx->totalbayar;
-            $detail->kasir=$trx->kasir->name;
-            $detail->terapis=Pegawai::find($paket->pivot->pegawai_id)->nama;
-            $detail->tgl_transaksi=now('Asia/Makassar')->format('Y-m-d H:i:s');
-            $detail->save();
+            DetailTransaksi::updateOrCreate([
 
+                'kode_transaksi'=>$trx->kode
+            ],[
+                'transaksi_id'=>$trx->id,
+                'customer'=>$trx->customer_id,
+                'paket'=>$paket->nama,
+                'harga_paket'=>$paket->harga,
+                'paket_qty'=>$paket->pivot->qty,
+                'harga_pokok'=>totalHarga($trx)['total'],
+                'diskon'=>$trx->diskon,
+                'total_harga'=>totalHarga($trx)['total']-$trx->diskon,
+                'total_biaya'=>totalHarga($trx)['biaya'],
+                'kembali'=>($trx->totalbayar)-totalHarga($trx)['harga'],
+                'jumlah_bayar'=>$trx->totalbayar,
+                'kasir'=>$trx->kasir->name,
+                'terapis'=>Pegawai::find($paket->pivot->pegawai_id)->nama,
+                'status'=>'selesai',
+                'tgl_transaksi'=>now('Asia/Makassar')->format('Y-m-d H:i:s'),
+            ]);
         }
 
 

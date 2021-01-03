@@ -48,6 +48,11 @@
                 <i class="fa fa-fw fa-user-circle"></i>
                 <span>Customer</span></a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('laporan/transaksi') }}">
+                <i class="fa fa-fw fa-paper-plane"></i>
+                <span>Laporan Transaksi</span></a>
+        </li>
     @else
         <li class="nav-item">
             <a class="nav-link" href="{{ url('transaksi') }}">
@@ -58,6 +63,11 @@
             <a class="nav-link" href="{{ url('customer') }}">
                 <i class="fa fa-fw fa-user-circle"></i>
                 <span>Customer</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('laporan/transaksi') }}">
+                <i class="fa fa-fw fa-paper-plane"></i>
+                <span>Laporan Transaksi</span></a>
         </li>
     @endif
 

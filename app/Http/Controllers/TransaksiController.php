@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Barang;
+use App\DetailTransaksi;
+use App\Pegawai;
 use App\Transaksi;
 use App\TransaksiBatal;
 use Carbon\Carbon;
@@ -21,8 +23,12 @@ class TransaksiController extends Controller
     }
 
     public function detail($id){
-        $transaksi=Transaksi::find($id);
+        $transaksi=DetailTransaksi::where('transaksi_id',$id)->get() ;
         return view('transaksi.detail',['transaksi'=>$transaksi]);
+    }
+    public function detailx($id){
+        $transaksi=Transaksi::find($id) ;
+        return view('transaksi.detailx',['transaksi'=>$transaksi]);
     }
 
 
@@ -50,6 +56,29 @@ class TransaksiController extends Controller
 
     public function saveTrx(Request $request){
         Transaksi::updateOrCreate(['kode'=>$request->kode],['customer_id'=>$request->customer,'user_id'=>Auth::user()->id,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
+        $trx=Transaksi::where('kode',$request->kode)->first();
+
+        foreach ($trx->paket as $paket){
+            DetailTransaksi::updateOrCreate([
+                'kode_transaksi'=>$trx->kode
+            ],[
+                'transaksi_id'=>$trx->id,
+                'customer'=>$trx->customer_id,
+                'paket'=>$paket->nama,
+                'harga_paket'=>$paket->harga,
+                'paket_qty'=>$paket->pivot->qty,
+                'harga_pokok'=>totalHarga($trx)['total'],
+                'diskon'=>$trx->diskon,
+                'total_harga'=>totalHarga($trx)['total']-$trx->diskon,
+                'total_biaya'=>totalHarga($trx)['biaya'],
+                'kembali'=>($trx->totalbayar)-totalHarga($trx)['harga'],
+                'jumlah_bayar'=>$trx->totalbayar,
+                'kasir'=>$trx->kasir->name,
+                'terapis'=>Pegawai::find($paket->pivot->pegawai_id)->nama,
+                'status'=>'pending',
+                'tgl_transaksi'=>now('Asia/Makassar')->format('Y-m-d H:i:s'),
+            ]);
+        }
         return response('ok');
     }
 
@@ -127,6 +156,32 @@ class TransaksiController extends Controller
         $trx=Transaksi::find($request->trxid);
         $trx->update(['tipe_byr'=>$request->tipe_byr,"totalbayar"=>$request->jumlah_byr,"catatan"=>$request->catatan,'diskon'=>$request->diskon]);
 
+        if (empty($request->jumlah_byr)){
+            $jmlbyr=0;
+        }else{
+            $jmlbyr=$request->jumlah_byr;
+        }
+        foreach ($trx->paket as $paket){
+            DetailTransaksi::updateOrCreate([
+                'kode_transaksi'=>$trx->kode
+            ],[
+                'transaksi_id'=>$trx->id,
+                'customer'=>$trx->customer_id,
+                'paket'=>$paket->nama,
+                'harga_paket'=>$paket->harga,
+                'paket_qty'=>$paket->pivot->qty,
+                'harga_pokok'=>totalHarga($trx)['total'],
+                'diskon'=>$trx->diskon,
+                'total_harga'=>totalHarga($trx)['total']-$trx->diskon,
+                'total_biaya'=>totalHarga($trx)['biaya'],
+                'kembali'=>($trx->totalbayar)-totalHarga($trx)['harga'],
+                'jumlah_bayar'=>$jmlbyr,
+                'kasir'=>$trx->kasir->name,
+                'terapis'=>Pegawai::find($paket->pivot->pegawai_id)->nama,
+                'status'=>'pending',
+                'tgl_transaksi'=>now('Asia/Makassar')->format('Y-m-d H:i:s'),
+            ]);
+        }
         return response('ok');
     }
 
@@ -153,7 +208,7 @@ class TransaksiController extends Controller
 
         }
         foreach ($transaksi->detail as $detail){
-            $detail->update(['status'=>'batal']);
+            $detail->update(['status'=>'batal','tgl_batal'=>Carbon::now('Asia/Makassar')->format('Y-m-d :H:i:s')]);
         }
         return response('ok');
     }

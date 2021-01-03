@@ -59,5 +59,40 @@
 @endsection
 @section('script')
     <script>
+        function hapusPaket(id) {
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: "Data paket treatment akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText:'Batal',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                $.ajax({
+                    url:'{{ route('paket.hapus') }}',
+                    type:'POST',
+                    data:{
+                        _token:'{{ csrf_token() }}',
+                        id:id
+                    },success:function (s) {
+                        if(s==='success'){
+                            Swal.fire(
+                                'Berhasil!',
+                                'Data paket telah dihapus',
+                                'success'
+                            )
+                            setTimeout(function(){
+                                window.location.reload()
+                            }, 3000);
+                        }
+                    }
+                })
+
+            }
+        })
+        }
     </script>
 @endsection

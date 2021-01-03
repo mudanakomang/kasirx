@@ -256,6 +256,10 @@
 @section('script')
     <script>
 
+        function pad2(n) {  // always returns a string
+            return (n < 10 ? '0' : '') + n;
+        }
+
         $(document).ready(function () {
             $("#jumlah_byr").mask("#.##0", {reverse: true}).val("");
             $("#diskon").mask("#.##0", {reverse: true}).val("");
@@ -264,7 +268,12 @@
             $('#tipe_byr').select2()
             if(getCookie('kode')===null){
                 var dt= new Date();
-                var kode=dt.getFullYear()+""+dt.getMonth()+""+dt.getDate()+""+dt.getHours()+""+dt.getMinutes()+""+dt.getSeconds()
+                var kode=dt.getFullYear() +
+                    pad2(dt.getMonth() + 1) +
+                    pad2(dt.getDate()) +
+                    pad2(dt.getHours()) +
+                    pad2(dt.getMinutes()) +
+                    pad2(dt.getSeconds());
                 setCookie('kode',kode,0.25)
 
             }

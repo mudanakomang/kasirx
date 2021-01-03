@@ -80,7 +80,7 @@
 
                             <tr class="{{ !empty($item->transaksiBatal) ? "table-danger" : ($item->print=='y' ? 'table-success':'') }}">
 
-                                <td><a href="{{ url('transaksi/detail/').'/'.$item->id }}"> {{ $item->kode }}</a></td>
+                                <td>@if($item->print=='y')<a href="{{ url('transaksi/detail/').'/'.$item->id }}"> {{ $item->kode }}</a>@else<a href="{{ url('transaksi/detailx/').'/'.$item->id }}"> {{ $item->kode }}</a> @endif</td>
                                 <td>{{ $item->tipe_byr }}</td>
                                 <td>{{ formatRp(totalHarga($item)['total'])  }}</td>
                                 <td>{{ formatRp($item->diskon)  }}</td>
@@ -117,7 +117,7 @@
     <script>
         $(function () {
             $("#datatableTransaksi").dataTable({
-                "order":[[6,"desc"]]
+                "order":[[0,"desc"]]
             })
         })
 
