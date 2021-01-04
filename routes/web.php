@@ -103,4 +103,11 @@ Route::group(['middleware'=>['auth','roles']],function(){
     Route::get('laporan/transaksi','LaporanController@transaksi');
     Route::post('laporan/transaksi','LaporanController@transaksiPost')->name('laporan.post');
     Route::post('laporan/transaksi/export','LaporanController@exportTransaksi')->name('transaksi.export');
+
+    Route::get('laporan/treatment','LaporanController@treatment');
+    Route::post('laporan/treatment','LaporanController@treatmentPost')->name('treatment.post');
+    Route::post('laporan/treatment/export','LaporanController@treatmentExport')->name('treatment.export');
+
+    Route::get('laporan/inventory','LaporanController@inventory');
+    Route::post('laporan/inventory/export','LaporanController@inventoryExport')->name('inventory.export');
 });

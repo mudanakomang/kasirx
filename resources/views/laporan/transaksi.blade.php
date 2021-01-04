@@ -8,20 +8,14 @@
             <li class="breadcrumb-item">
                 <a href="{{ url('dashboard') }}">Home</a>
             </li>
-            <li class="breadcrumb-item active">Transaksi</li>
+            <li class="breadcrumb-item active">Laporan Transaksi</li>
         </ol>
         <!-- Page Content -->
         <!-- DataTables Example -->
         <div class="card mb-3">
             <div class="card-header bg-primary text-white">
                 <i class="fa fa-table"></i>
-                Transaksi
-                <a href="{{ url('transaksi/tambah') }}" class="text-white" >
-                  <span class="float-right">
-                    <i class="fa fa-plus"></i>
-                    Transaksi Baru
-                  </span>
-                </a>
+                Laporan Transaksi
             </div>
             <div class="card-body">
                 <div class="col-sm-9 col-md-4 col-lg-4">

@@ -108,11 +108,12 @@ class PrintController extends Controller
         foreach ($trx->paket as $paket){
             DetailTransaksi::updateOrCreate([
 
-                'kode_transaksi'=>$trx->kode
-            ],[
+                'kode_transaksi'=>$trx->kode,
                 'transaksi_id'=>$trx->id,
+                'paket'=>$paket->nama
+            ],[
+
                 'customer'=>$trx->customer_id,
-                'paket'=>$paket->nama,
                 'harga_paket'=>$paket->harga,
                 'paket_qty'=>$paket->pivot->qty,
                 'harga_pokok'=>totalHarga($trx)['total'],

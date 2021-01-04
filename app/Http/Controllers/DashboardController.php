@@ -13,11 +13,13 @@ class DashboardController extends Controller
 {
     //
     public function index(){
-        $role=Auth::user()->hasRole('admin') ? 'admin':'kasir';
+        $role=Auth::user()->hasRole('admin') ? 'admin':(Auth::user()->hasRole('kasir') ? 'kasir':'customer');
         if ($role=='admin'){
             return view('admin.dashboard');
-        }else{
+        }elseif ($role=='kasir') {
             return redirect('transaksi');
+        }else{
+            return redirect('customer');
         }
     }
 
