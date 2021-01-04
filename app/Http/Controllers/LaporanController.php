@@ -17,20 +17,20 @@ class LaporanController extends Controller
     //
 
     public function transaksi(Request $request){
-        $transaksi=DetailTransaksi::whereDate('updated_at','=',today('Asia/Makassar'))->get();
+        $transaksi=DetailTransaksi::whereDate('created_at','=',today('Asia/Makassar'))->get();
         return view('laporan.transaksi',['transaksi'=>$transaksi]);
     }
     public function transaksiPost(Request $request){
        if (empty($request->datemin)){
             $datemax=Carbon::parse($request->datemax)->timezone('Asia/Makassar')->format('Y-m-d');
-            $transaksi=DetailTransaksi::whereDate('updated_at','<=',$datemax)->get();
+            $transaksi=DetailTransaksi::whereDate('created_at','<=',$datemax)->get();
        }elseif ($request->method()=='POST' && empty($request->datemax)){
             $datemin=Carbon::parse($request->datemin)->timezone('Asia/Makassar')->format('Y-m-d');
-            $transaksi=DetailTransaksi::whereDate('updated_at','>=',$datemin)->get();
+            $transaksi=DetailTransaksi::whereDate('created_at','>=',$datemin)->get();
        }else{
             $datemin=Carbon::parse($request->datemin)->timezone('Asia/Makassar')->format('Y-m-d');
             $datemax=Carbon::parse($request->datemax)->timezone('Asia/Makassar')->format('Y-m-d');
-            $transaksi=DetailTransaksi::whereDate('updated_at','>=',$datemin)->whereDate('updated_at','<=',$datemax)->get();
+            $transaksi=DetailTransaksi::whereDate('created_at','>=',$datemin)->whereDate('created_at','<=',$datemax)->get();
        }
         return view('laporan.transaksi',['transaksi'=>$transaksi,'datemin'=>$request->datemin,'datemax'=>$request->datemax]);
     }
@@ -40,19 +40,19 @@ class LaporanController extends Controller
         if (empty($request->min) && !empty($request->max)){
             $title="Laporan Transaksi ".$request->max;
             $datemax=Carbon::parse($request->max)->timezone('Asia/Makassar')->format('Y-m-d');
-            $transaksi=DetailTransaksi::whereDate('updated_at','<=',$datemax)->where('status','selesai')->get();
+            $transaksi=DetailTransaksi::whereDate('created_at','<=',$datemax)->where('status','selesai')->get();
         }elseif ( empty($request->max) && !empty($request->min)){
             $title="Laporan Transaksi ".$request->min;
             $datemin=Carbon::parse($request->min)->timezone('Asia/Makassar')->format('Y-m-d');
-            $transaksi=DetailTransaksi::whereDate('updated_at','>=',$datemin)->where('status','selesai')->get();
+            $transaksi=DetailTransaksi::whereDate('created_at','>=',$datemin)->where('status','selesai')->get();
         }elseif(empty($request->min) && empty($request->max)){
             $title ="Laporan Transaksi";
-            $transaksi=DetailTransaksi::whereDate('updated_at','>=',today('Asia/Makassar')->format('Y-m-d'))->where('status','selesai')->get();
+            $transaksi=DetailTransaksi::whereDate('created_at','>=',today('Asia/Makassar')->format('Y-m-d'))->where('status','selesai')->get();
         }else{
             $title="Laporan Transaksi ".$request->min. " - ". $request->max;
             $datemin=Carbon::parse($request->min)->timezone('Asia/Makassar')->format('Y-m-d');
             $datemax=Carbon::parse($request->max)->timezone('Asia/Makassar')->format('Y-m-d');
-            $transaksi=DetailTransaksi::whereDate('updated_at','>=',$datemin)->whereDate('updated_at','<=',$datemax)->where('status','selesai')->get();
+            $transaksi=DetailTransaksi::whereDate('created_at','>=',$datemin)->whereDate('created_at','<=',$datemax)->where('status','selesai')->get();
         }
 
         Excel::create($title,function ($excel) use($transaksi,$title) {
@@ -97,21 +97,21 @@ class LaporanController extends Controller
     public function treatment(){
         $bulan=today('Asia/Makassar')->format('m');
         $tahun=today('Asia/Makassar')->format('Y');
-        $tr=DetailTransaksi::with('pelanggan')->where('status','selesai')->whereMonth('updated_at',$bulan)->whereYear('updated_at',$tahun)->get();
+        $tr=DetailTransaksi::with('pelanggan')->where('status','selesai')->whereMonth('created_at',$bulan)->whereYear('created_at',$tahun)->get();
         return view('laporan.treatment',['treatment'=>$tr]);
     }
 
     public function treatmentPost(Request $request){
        $bulan= Carbon::parse($request->bulan)->format('m');
        $tahun= Carbon::parse($request->bulan)->format('Y');
-       $tr=DetailTransaksi::with('pelanggan')->where('status','selesai')->whereMonth('updated_at',$bulan)->whereYear('updated_at',$tahun)->get();
+       $tr=DetailTransaksi::with('pelanggan')->where('status','selesai')->whereMonth('created_at',$bulan)->whereYear('created_at',$tahun)->get();
 
        return view('laporan.treatment',['treatment'=>$tr,'bulan'=>$tahun.'-'.$bulan]);
     }
     public function treatmentExport(Request $request){
         $bulan= Carbon::parse($request->bln)->format('m');
         $tahun= Carbon::parse($request->bln)->format('Y');
-        $tr=DetailTransaksi::with('pelanggan')->where('status','selesai')->whereMonth('updated_at',$bulan)->whereYear('updated_at',$tahun)->get();
+        $tr=DetailTransaksi::with('pelanggan')->where('status','selesai')->whereMonth('created_at',$bulan)->whereYear('created_at',$tahun)->get();
 
         $treatment=[];
         $terapis=$tr->groupBy('terapis');
