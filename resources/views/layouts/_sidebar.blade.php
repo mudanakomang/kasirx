@@ -74,21 +74,6 @@
                 <i class="fa fa-fw fa-user-circle"></i>
                 <span>Customer</span></a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url('laporan/transaksi') }}">
-                <i class="fa fa-fw fa-paper-plane"></i>
-                <span>Laporan Transaksi</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url('laporan/treatment') }}">
-                <i class="fa fa-fw fa-hand-grab-o"></i>
-                <span>Laporan Treatment</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url('laporan/inventory') }}">
-                <i class="fa fa-fw fa-tags"></i>
-                <span>Laporan Inventory</span></a>
-        </li>
         @else
         <li class="nav-item">
             <a class="nav-link" href="{{ url('customer') }}">
