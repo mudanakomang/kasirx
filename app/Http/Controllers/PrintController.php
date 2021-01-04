@@ -131,9 +131,9 @@ class PrintController extends Controller
 
 
 
-        $this->cetak($printer,$trx);
-        sleep(5);
-        $this->cetak($printer,$trx);
+//        $this->cetak($printer,$trx);
+//        sleep(5);
+//        $this->cetak($printer,$trx);
 
         foreach ($trx->paket as $paket){
             foreach ($paket->barang as $barang){
