@@ -53,6 +53,7 @@ class LaporanController extends Controller
             $datemin=Carbon::parse($request->min)->timezone('Asia/Makassar')->format('Y-m-d');
             $datemax=Carbon::parse($request->max)->timezone('Asia/Makassar')->format('Y-m-d');
             $transaksi=DetailTransaksi::whereDate('updated_at','>=',$datemin)->whereDate('updated_at','<=',$datemax)->where('status','selesai')->get();
+            dd($transaksi);
         }
 
         Excel::create($title,function ($excel) use($transaksi,$title) {
