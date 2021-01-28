@@ -36,7 +36,13 @@
                         @foreach($transaksi as $key=>$item)
                             <tr class="{{ $item[0]->status=="batal" ? 'table-danger':($item[0]->status=='selesai' ? 'table-success':'') }}">
                                 <td></td>
-                                <td><a href="{{ url('customer/transaksi/detail/').'/'.$key }}">{{ $key }}</a> </td>
+                                <td>
+                                    @if($item[0]->status=="pending")
+                                        <a href="{{ url('transaksi/detail/').'/'.$item[0]->transaksi_id }}"> {{ $key }}</a>
+                                    @else
+                                        <a href="{{ url('transaksi/detailx/').'/'.$item[0]->transaksi_id }}"> {{ $key }}</a>
+                                    @endif
+                                </td>
                                 <td>{{ formatRp($item[0]->harga_pokok) }}</td>
                                 <td>{{ formatRp($item[0]->diskon) }}</td>
                                 <td>{{ formatRp($item[0]->jumlah_bayar) }}</td>

@@ -419,7 +419,7 @@
                                             callback: function (value, index, values) {
                                                 return 'Rp. '+ $.number(value,0,',','.');
                                             },
-                                            stepSize:500000,
+                                            stepSize:20000000,
                                         }
                                     }]
                                 },

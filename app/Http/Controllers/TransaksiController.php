@@ -208,7 +208,7 @@ class TransaksiController extends Controller
 
         }
         foreach ($transaksi->detail as $detail){
-            $detail->update(['status'=>'batal','tgl_batal'=>Carbon::now('Asia/Makassar')->format('Y-m-d :H:i:s')]);
+            $detail->update(['status'=>'batal','tgl_batal'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
         }
         return response('ok');
     }
