@@ -593,6 +593,7 @@
                     diskon:diskon,
                 },success:function (s) {
                     if(s==='ok'){
+                        eraseCookie('kode')
                         $.ajax({
                             url:"{{ route("trx.cetak") }}",
                             type:"POST",
