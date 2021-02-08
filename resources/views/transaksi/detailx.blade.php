@@ -554,6 +554,7 @@
                     catatan:catatan,
                 },success:function(s){
                     if(s==='ok'){
+                        eraseCookie('kode')
                         window.location.href="{{ url('transaksi') }}"
                     }
                 }
@@ -592,6 +593,7 @@
                     diskon:diskon,
                 },success:function (s) {
                     if(s==='ok'){
+                        eraseCookie('kode')
                         $.ajax({
                             url:"{{ route("trx.cetak") }}",
                             type:"POST",
