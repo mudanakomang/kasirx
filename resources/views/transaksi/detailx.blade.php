@@ -602,6 +602,7 @@
                                 trxid:"{{ isset($transaksi) ? $transaksi->id:0}}"
                             },success:function (s) {
                                 if(s==='ok'){
+                                    console.log(getCookie('kode'))
                                     eraseCookie('kode')
                                    // window.location.href="{{ url('transaksi') }}"
                                 }
