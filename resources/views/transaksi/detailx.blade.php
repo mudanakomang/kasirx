@@ -81,7 +81,7 @@
         {{--</div>--}}
         {{--<div class="card-footer small text-muted"></div>--}}
         {{--</div>--}}
-        <h2>Detail Transaksi #{{ $transaksi->kode }}</h2>
+        {{--<h2>Detail Transaksi #{{ $transaksi->kode }}</h2>--}}
         <hr>
         <div class="col-sm-12 col-md-8 col-lg-8">
             <div class="row">
