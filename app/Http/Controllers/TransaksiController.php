@@ -27,8 +27,8 @@ class TransaksiController extends Controller
         return view('transaksi.detail',['transaksi'=>$transaksi]);
     }
     public function detailx($id){
-        dd($id);
-        $transaksi=Transaksi::find($id) ;
+
+        $transaksi=DetailTransaksi::find($id) ;
         return view('transaksi.detailx',['transaksi'=>$transaksi]);
     }
 
