@@ -55,7 +55,7 @@ class TransaksiController extends Controller
     }
 
     public function saveTrx(Request $request){
-        Transaksi::updateOrCreate(['kode'=>$request->kode],['customer_id'=>$request->customer,'user_id'=>Auth::user()->id,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
+        Transaksi::updateOrCreate(['kode'=>$request->kode],['user_id'=>Auth::user()->id,'created_at'=>Carbon::now('Asia/Makassar')->format('Y-m-d H:i:s')]);
         $trx=Transaksi::where('kode',$request->kode)->first();
 
         foreach ($trx->paket as $paket){
