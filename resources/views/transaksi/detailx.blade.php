@@ -81,7 +81,7 @@
         {{--</div>--}}
         {{--<div class="card-footer small text-muted"></div>--}}
         {{--</div>--}}
-        {{--<h2>Detail Transaksi #{{ $transaksi->kode }}</h2>--}}
+        <h2>Detail Transaksi #{{ $transaksi->kode }}</h2>
         <hr>
         <div class="col-sm-12 col-md-8 col-lg-8">
             <div class="row">
@@ -554,7 +554,6 @@
                     catatan:catatan,
                 },success:function(s){
                     if(s==='ok'){
-                        eraseCookie('kode')
                         window.location.href="{{ url('transaksi') }}"
                     }
                 }
@@ -593,7 +592,6 @@
                     diskon:diskon,
                 },success:function (s) {
                     if(s==='ok'){
-                        eraseCookie('kode')
                         $.ajax({
                             url:"{{ route("trx.cetak") }}",
                             type:"POST",
