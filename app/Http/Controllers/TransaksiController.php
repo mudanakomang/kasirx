@@ -27,7 +27,7 @@ class TransaksiController extends Controller
         return view('transaksi.detail',['transaksi'=>$transaksi]);
     }
     public function detailx($id){
-        $transaksi=DetailTransaksi::where('transaksi_id',$id)->first() ;
+        $transaksi=Transaksi::find($id) ;
         return view('transaksi.detailx',['transaksi'=>$transaksi]);
     }
 
