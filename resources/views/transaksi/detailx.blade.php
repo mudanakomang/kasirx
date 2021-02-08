@@ -603,7 +603,7 @@
                             },success:function (s) {
                                 if(s==='ok'){
                                     eraseCookie('kode')
-                                    window.location.href="{{ url('transaksi') }}"
+                                   // window.location.href="{{ url('transaksi') }}"
                                 }
                             }
                         })
