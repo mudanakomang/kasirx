@@ -9,6 +9,7 @@ use App\Transaksi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
@@ -144,6 +145,9 @@ class PrintController extends Controller
             }
         }
         $trx->update(['print'=>"y"]);
+        if (!empty($_COOKIE['kode'])){
+            setcookie("kode", "", time() - 3600);
+        }
 
 
         return response('ok');
